@@ -56,9 +56,9 @@ const HomePage = () => {
             Hedge Real-World Risks with{" "}
             <span
               className="bg-clip-text text-transparent"
-              style={{
-                backgroundImage: "linear-gradient(135deg, hsl(var(--primary)), hsl(271 76% 60%))",
-              }}
+            style={{
+              backgroundImage: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 40%))",
+            }}
             >
               AI-Built Event Portfolios
             </span>
