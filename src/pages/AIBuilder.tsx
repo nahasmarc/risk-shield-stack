@@ -394,11 +394,8 @@ const AIBuilderPage = () => {
                   <button
                     onClick={() => handleSubmit()}
                     disabled={!input.trim() || isThinking}
-                    className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
-                    style={{
-                      background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 48%))",
-                      boxShadow: "0 2px 8px hsl(var(--primary) / 0.3)",
-                    }}
+                    className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 active:scale-95 bg-primary"
+                    style={{ boxShadow: "0 2px 8px hsl(var(--primary) / 0.3)" }}
                   >
                     <Send className="w-3.5 h-3.5 text-white" />
                   </button>
