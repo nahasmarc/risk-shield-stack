@@ -377,7 +377,7 @@ const EventIndexesPage = () => {
       <div className="border-t border-border bg-card">
         <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
           <span className="text-sm text-muted-foreground">
-            Netira · Event Indexes · v0.1.0
+            PolyBumble · Event Indexes · v0.1.0
           </span>
           <span className="text-sm text-muted-foreground">
             Powered by Polymarket
