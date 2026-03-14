@@ -8,6 +8,7 @@ import { ContractRow } from "@/components/ContractRow";
 import { CATEGORY_CONFIG, HEDGE_BUNDLES, HedgeBundle, getAvgProbability, RISK_LEVEL_CONFIG } from "@/data/bundles";
 import { ProbabilityGauge } from "@/components/ProbabilityGauge";
 import { useToast } from "@/hooks/use-toast";
+import { buildHedge, type ApiBundle } from "@/lib/api";
 
 interface Message {
   id: string;
