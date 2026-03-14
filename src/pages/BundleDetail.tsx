@@ -4,6 +4,7 @@ import { ArrowLeft, Info } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { ContractRow } from "@/components/ContractRow";
 import { CoverageCalculator } from "@/components/CoverageCalculator";
+import { HedgeEffectivenessScore } from "@/components/HedgeEffectivenessScore";
 import {
   getBundleById,
   getAvgProbability,
