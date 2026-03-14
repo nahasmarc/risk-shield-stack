@@ -330,6 +330,72 @@ const AIBuilderPage = () => {
           >
             <NewsToHedge />
           </motion.div>
+        ) : activeTab === "saved" ? (
+          <motion.div
+            key="saved"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="flex-1 overflow-y-auto"
+          >
+            <div className="max-w-2xl mx-auto px-6 py-8">
+              <h2 className="text-lg font-bold text-foreground mb-1">Saved Bundles</h2>
+              <p className="text-sm text-muted-foreground mb-6">
+                {user ? "Your saved hedge bundles, persisted across sessions." : "Sign in to save and view your bundles."}
+              </p>
+
+              {loadingSaved ? (
+                <div className="flex items-center justify-center py-16">
+                  <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                </div>
+              ) : savedBundleRecords.length === 0 ? (
+                <div className="text-center py-16">
+                  <Bookmark className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+                  <p className="text-sm text-muted-foreground">No saved bundles yet.</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Build a hedge in the AI Chat tab and click "Save".
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {savedBundleRecords.map((rec) => {
+                    const catConfig = CATEGORY_CONFIG[rec.bundle_category] ?? CATEGORY_CONFIG["MACRO"];
+                    const contracts = Array.isArray(rec.contracts) ? rec.contracts : [];
+                    return (
+                      <div
+                        key={rec.id}
+                        className="bg-card rounded-2xl border border-border/60 overflow-hidden"
+                        style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
+                      >
+                        <div className="h-1 w-full" style={{ backgroundColor: catConfig.accentHex }} />
+                        <div className="flex items-center gap-3 px-4 py-3">
+                          <div
+                            className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-base"
+                            style={{ backgroundColor: catConfig.pastel }}
+                          >
+                            {rec.bundle_icon}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-bold text-foreground truncate">{rec.bundle_title}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                              {contracts.length} contracts · {new Date(rec.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => handleDeleteSaved(rec.bundle_id)}
+                            className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </motion.div>
         ) : (
           <motion.div
             key="chat"
