@@ -1,9 +1,31 @@
 import { Link, useLocation } from "react-router-dom";
-import { BrainCircuit, Zap } from "lucide-react";
+import { BrainCircuit, Zap, BarChart3 } from "lucide-react";
 
 export function Navigation() {
   const location = useLocation();
-  const isBuilder = location.pathname === "/builder";
+  const path = location.pathname;
+
+  const navLink = (to: string, label: string, icon?: React.ReactNode, badge?: string) => {
+    const active = path === to;
+    return (
+      <Link
+        to={to}
+        className={`flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 ${
+          active
+            ? "bg-primary text-primary-foreground shadow-sm"
+            : "text-muted-foreground hover:text-foreground hover:bg-muted"
+        }`}
+      >
+        {icon}
+        {label}
+        {badge && (
+          <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary ml-0.5">
+            {badge}
+          </span>
+        )}
+      </Link>
+    );
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-card border-b border-border/60" style={{ boxShadow: "0 1px 0 hsl(var(--border)), 0 2px 8px rgba(0,0,0,0.04)" }}>
@@ -23,30 +45,9 @@ export function Navigation() {
 
         {/* Nav Links */}
         <div className="flex items-center gap-1">
-          <Link
-            to="/"
-            className={`text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 ${
-              !isBuilder
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground hover:bg-muted"
-            }`}
-          >
-            Bundles
-          </Link>
-          <Link
-            to="/builder"
-            className={`flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 ${
-              isBuilder
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground hover:bg-muted"
-            }`}
-          >
-            <BrainCircuit className="w-3.5 h-3.5" />
-            AI Builder
-            <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary ml-0.5">
-              BETA
-            </span>
-          </Link>
+          {navLink("/", "Bundles")}
+          {navLink("/indexes", "Event Indexes", <BarChart3 className="w-3.5 h-3.5" />)}
+          {navLink("/builder", "AI Builder", <BrainCircuit className="w-3.5 h-3.5" />, "BETA")}
         </div>
 
         {/* Status indicator */}
