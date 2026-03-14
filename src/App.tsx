@@ -25,6 +25,7 @@ const App = () => (
           <Route path="/indexes" element={<EventIndexes />} />
           <Route path="/builder" element={<AIBuilder />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
