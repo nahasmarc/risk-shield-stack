@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { ExternalLink } from "lucide-react";
 import { Contract, formatMillions } from "@/data/bundles";
 
 interface ContractRowProps {
@@ -28,9 +29,23 @@ export function ContractRow({ contract, index = 0 }: ContractRowProps) {
       {/* Header row */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1 min-w-0">
-          <span className="text-xs font-medium text-muted-foreground mb-1 block">
-            {contract.category}
-          </span>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-xs font-medium text-muted-foreground">
+              {contract.category}
+            </span>
+            {contract.id && !contract.id.includes("-") && (
+              <a
+                href={`https://polymarket.com/market/${contract.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+                title="View on Polymarket"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            )}
+          </div>
           <p className="text-sm font-semibold text-foreground leading-snug">
             {contract.title}
           </p>

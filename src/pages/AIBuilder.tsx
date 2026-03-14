@@ -129,17 +129,31 @@ const AIBuilderPage = () => {
       // Call real AI backend
       const result = await buildHedge(text);
 
-      // Map ApiBundle → HedgeBundle for BundleCard compatibility
-      const frontendBundle: HedgeBundle | null = HEDGE_BUNDLES.find(
-        (b) => b.id === result.bundle.id
-      ) ?? null;
+      // Merge live contracts with static metadata (title, icon, risk level, tags)
+      const staticMeta = HEDGE_BUNDLES.find((b) => b.id === result.bundle.id);
+      const frontendBundle: HedgeBundle | null = {
+        id: result.bundle.id,
+        title: result.bundle.title ?? staticMeta?.title ?? result.bundle.id,
+        description: staticMeta?.description ?? "",
+        category: result.bundle.category,
+        categoryColor: staticMeta?.categoryColor ?? "hsl(var(--primary))",
+        categoryPastel: staticMeta?.categoryPastel ?? "hsl(var(--primary) / 0.1)",
+        icon: staticMeta?.icon ?? "📊",
+        riskLevel: staticMeta?.riskLevel ?? "MEDIUM",
+        tags: staticMeta?.tags ?? [],
+        lastUpdated: new Date().toISOString(),
+        // Use live contracts from API, fall back to static if empty
+        contracts: result.bundle.contracts.length > 0
+          ? result.bundle.contracts
+          : staticMeta?.contracts ?? [],
+      };
 
       const catConfig = CATEGORY_CONFIG[result.bundle.category] ?? CATEGORY_CONFIG["MACRO"];
-      const avg = result.bundle.contracts.length > 0
-        ? Math.round(result.bundle.contracts.reduce((s, c) => s + c.probability, 0) / result.bundle.contracts.length)
+      const avg = frontendBundle.contracts.length > 0
+        ? Math.round(frontendBundle.contracts.reduce((s, c) => s + c.probability, 0) / frontendBundle.contracts.length)
         : 0;
 
-      const responseText = `I've identified a **${catConfig.label}** risk profile from your query.\n\nConstructing the **"${result.bundle.title}"** hedge bundle — ${result.bundle.contracts.length} correlated Polymarket contracts with an aggregate probability of **${avg}%**. Here's your position:`;
+      const responseText = `I've identified a **${catConfig.label}** risk profile from your query.\n\nConstructing the **"${frontendBundle.title}"** hedge bundle — ${frontendBundle.contracts.length} live Polymarket contracts with an aggregate probability of **${avg}%**. Here's your position:`;
 
       const assistantMsg: Message = {
         id: crypto.randomUUID(),
@@ -149,17 +163,15 @@ const AIBuilderPage = () => {
       };
       setMessages((prev) => [...prev, assistantMsg]);
 
-      if (frontendBundle) {
-        await new Promise((r) => setTimeout(r, 300));
-        const bundleMsg: Message = {
-          id: crypto.randomUUID(),
-          role: "bundle",
-          content: "",
-          bundle: frontendBundle,
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, bundleMsg]);
-      }
+      await new Promise((r) => setTimeout(r, 300));
+      const bundleMsg: Message = {
+        id: crypto.randomUUID(),
+        role: "bundle",
+        content: "",
+        bundle: frontendBundle,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, bundleMsg]);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong.";
 
