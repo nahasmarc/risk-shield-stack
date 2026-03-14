@@ -45,52 +45,105 @@ interface GammaMarket {
 
 // ── Keyword → Bundle classification map ──────────────────────────────────────
 
-const KEYWORD_BUNDLE_MAP: Array<{ keywords: string[]; bundleId: string; category: string }> = [
+// ── Blocklist: topics that must NEVER appear in any bundle ────────────────────
+// If ANY of these phrases appear in the market title, the market is dropped entirely.
+const BLOCKLIST_PHRASES: string[] = [
+  // Sports & games
+  "gta", "grand theft auto", "world cup", "fifa", "masters tournament",
+  "champions league", "super bowl", "nba", "nfl", "mlb", "nhl", "ufc",
+  "wimbledon", "us open", "french open", "australian open", "formula 1",
+  "f1", "pga", "golf", "tennis", "soccer", "football championship",
+  "basketball", "baseball", "hockey", "olympic", "esport",
+  // Entertainment / pop culture
+  "oscar", "grammy", "emmy", "golden globe", "box office", "film",
+  "movie", "album", "song", "taylor swift", "spotify", "netflix",
+  "youtube", "twitch", "celebrity", "kardashian",
+  // Crypto / meme speculative
+  "dogecoin", "shiba", "memecoin", "nft ", "metaverse", "minecraft",
+  "fortnite", "roblox", "pokemon", "anime",
+  // Religion / supernatural / joke markets
+  "jesus christ", "god ", "alien", "ufo", "extraterrestrial", "bigfoot",
+  "zombie", "apocalypse",
+  // Unrelated science
+  "measles", "covid", "pandemic", "flu ", "hurricane name",
+];
+
+// ── Category keyword bundles — require ≥2 distinct keywords to match ──────────
+// Each entry has a required minimum match count to reduce false positives.
+interface BundleEntry {
+  keywords: string[];
+  bundleId: string;
+  category: string;
+  minMatches: number; // minimum distinct keywords that must match
+}
+
+const KEYWORD_BUNDLE_MAP: BundleEntry[] = [
   {
+    // Energy / oil shock — strict commodity terms only
     keywords: [
-      "oil", "opec", "crude", "petroleum", "brent", "wti", "energy",
-      "natural gas", "lng", "pipeline", "refinery", "gasoline", "fuel",
+      "crude oil", "oil price", "oil shock", "opec", "brent", "wti",
+      "petroleum", "natural gas", "lng", "gasoline price", "fuel price",
+      "energy price", "oil barrel", "oil supply", "oil demand",
     ],
     bundleId: "oil-shock",
     category: "ENERGY",
+    minMatches: 1, // these are very specific, 1 match is fine
   },
   {
+    // AI regulation — must mention AI governance/policy specifically
     keywords: [
-      "ai", "artificial intelligence", "openai", "anthropic", "llm",
-      "machine learning", "deepmind", "gpt", "chatgpt", "regulation",
-      "eu ai", "safety bill", "frontier model", "compute", "nvidia",
+      "artificial intelligence regulation", "ai regulation", "ai ban",
+      "ai safety bill", "eu ai act", "ai policy", "frontier model",
+      "openai regulation", "anthropic", "ai governance", "ai liability",
+      "llm regulation", "generative ai law", "ai act",
     ],
     bundleId: "ai-regulation",
     category: "TECHNOLOGY",
+    minMatches: 1,
   },
   {
+    // Geopolitics — military/territorial conflict specific
     keywords: [
-      "taiwan", "strait", "china", "semiconductor", "chip", "tsmc",
-      "pla", "invasion", "xi jinping", "beijing", "prc", "dprk", "north korea",
-      "ukraine", "russia", "nato", "middle east", "israel", "iran",
-      "hamas", "hezbollah", "war", "military", "conflict",
+      "taiwan invasion", "china invade taiwan", "taiwan strait",
+      "tsmc", "semiconductor war", "chip ban", "ukraine war",
+      "ukraine ceasefire", "russia invade", "nato expansion",
+      "iran nuclear", "iran war", "us forces enter", "us attack iran",
+      "north korea missile", "north korea nuclear",
+      "israel hamas", "israel iran", "hezbollah",
+      "xi jinping", "pla military", "south china sea",
     ],
     bundleId: "taiwan-conflict",
     category: "GEOPOLITICS",
+    minMatches: 1,
   },
   {
+    // US Politics — election and governance specific
     keywords: [
-      "election", "midterm", "congress", "vote", "democrat", "republican",
-      "senate", "ballot", "trump", "harris", "potus", "president",
-      "governor", "speaker", "majority", "poll", "approval rating",
+      "us presidential election", "presidential nomination",
+      "democratic nomination", "republican nomination",
+      "senate majority", "house majority", "midterm election",
+      "electoral college", "us congress", "impeach",
+      "trump presidency", "trump administration", "trump out",
+      "us president 2028", "us election 2026", "us election 2028",
+      "fed chair", "federal reserve chair", "treasury secretary",
     ],
     bundleId: "us-election-volatility",
     category: "POLITICS",
+    minMatches: 1,
   },
   {
+    // Macro / inflation — financial indicators
     keywords: [
-      "inflation", "cpi", "fed", "federal reserve", "interest rate",
-      "tariff", "pce", "fomc", "hike", "dollar", "dxy", "gdp",
-      "recession", "rate cut", "unemployment", "jobs report", "nonfarm",
-      "treasury", "yield", "10-year", "debt ceiling", "default",
+      "inflation rate", "cpi report", "core inflation",
+      "federal reserve rate", "interest rate hike", "rate cut",
+      "fomc meeting", "fed funds rate", "tariff", "trade war",
+      "gdp growth", "recession", "debt ceiling", "us default",
+      "treasury yield", "10-year yield", "dollar index", "dxy",
+      "nonfarm payroll", "unemployment rate", "jobs report",
     ],
     bundleId: "inflation-spike",
     category: "MACRO",
+    minMatches: 1,
   },
 ];
 
@@ -99,11 +152,20 @@ function classifyMarket(question: string, description: string, tags: string[]): 
   category: string;
 } {
   const text = [question, description, ...tags].join(" ").toLowerCase();
+
+  // ── Hard blocklist check — drop market entirely if any phrase matches ──────
+  for (const phrase of BLOCKLIST_PHRASES) {
+    if (text.includes(phrase)) {
+      return { bundleIds: [], category: "OTHER" };
+    }
+  }
+
   const matchedBundleIds: string[] = [];
   let category = "OTHER";
 
   for (const entry of KEYWORD_BUNDLE_MAP) {
-    if (entry.keywords.some((kw) => text.includes(kw))) {
+    const matchCount = entry.keywords.filter((kw) => text.includes(kw)).length;
+    if (matchCount >= entry.minMatches) {
       if (!matchedBundleIds.includes(entry.bundleId)) {
         matchedBundleIds.push(entry.bundleId);
       }
@@ -183,8 +245,8 @@ function normaliseMarket(raw: GammaMarket): Market | null {
 //   1. Top 200 by volume (most liquid / high-signal markets)
 //   2. An additional 200 by liquidity (sometimes different set)
 const GAMMA_ENDPOINTS = [
-  "https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=200&order=volumeNum&ascending=false",
-  "https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=200&order=liquidityNum&ascending=false",
+  "https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=500&order=volumeNum&ascending=false",
+  "https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=500&order=liquidityNum&ascending=false",
 ];
 
 // ── In-memory cache ───────────────────────────────────────────────────────────
