@@ -51,19 +51,19 @@ const HomePage = () => {
           {/* Pill badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 border border-primary/15 mb-6">
             <Shield className="w-3.5 h-3.5 text-primary" />
-            <span className="text-xs font-semibold text-primary">Risk Hedging Platform</span>
+            <span className="text-xs font-semibold text-primary">The Future of Insurance</span>
           </div>
 
           <h1 className="text-5xl font-bold text-foreground mb-5 leading-tight tracking-tight">
-            Hedge Real-World Risks with{" "}
+            Insurance Built for{" "}
             <span className="text-primary">
-              AI-Built Event Portfolios
+              How the World Actually Works
             </span>
           </h1>
 
           <p className="text-lg text-muted-foreground leading-relaxed mb-10 max-w-xl mx-auto">
-            Pre-built portfolios of prediction market contracts that provide meaningful
-            exposure to real-world event risks. One click. Complete coverage.
+            Dynamic coverage backed by real-world event data. PolyBumble replaces
+            static policies with intelligent protection that moves with the markets.
           </p>
 
           {/* Hero search/input bar */}
@@ -78,7 +78,7 @@ const HomePage = () => {
                 value={heroInput}
                 onChange={(e) => setHeroInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleHeroSubmit()}
-                placeholder="Describe a risk you want to hedge..."
+                placeholder="What do you need to be covered against?"
                 className="flex-1 text-sm text-foreground placeholder:text-muted-foreground bg-transparent focus:outline-none"
               />
               <button
@@ -86,7 +86,7 @@ const HomePage = () => {
                 className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-primary-foreground bg-primary transition-all duration-200 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
                 style={{ boxShadow: "0 4px 16px hsl(var(--primary) / 0.3)" }}
               >
-                Build a Hedge
+                Get Coverage
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
