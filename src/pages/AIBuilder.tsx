@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, BrainCircuit, Save } from "lucide-react";
+import { Send, BrainCircuit, Save, Newspaper, MessageSquare } from "lucide-react";
+import { NewsToHedge } from "@/components/NewsToHedge";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/Navigation";
 import { ContractRow } from "@/components/ContractRow";
