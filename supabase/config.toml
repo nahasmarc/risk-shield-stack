@@ -1,1 +1,13 @@
 project_id = "zgruagbdtxmglanstwgp"
+
+[functions.build-hedge]
+verify_jwt = false
+
+[functions.markets]
+verify_jwt = false
+
+[functions.news-hedge]
+verify_jwt = false
+
+[functions.analyze-portfolio]
+verify_jwt = false
