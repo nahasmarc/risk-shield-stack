@@ -6,51 +6,51 @@
 
 @layer base {
   :root {
-    --background: 0 0% 97%;
-    --foreground: 220 20% 12%;
+    --background: 0 0% 100%;
+    --foreground: 215 28% 9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 12%;
+    --card-foreground: 215 28% 9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 12%;
+    --popover-foreground: 215 28% 9%;
 
-    --primary: 348 100% 59%;
+    --primary: 221 89% 54%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 16% 96%;
-    --secondary-foreground: 220 20% 12%;
+    --secondary: 210 40% 98%;
+    --secondary-foreground: 215 28% 9%;
 
-    --muted: 210 16% 96%;
-    --muted-foreground: 215 14% 48%;
+    --muted: 210 40% 98%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 24 100% 50%;
+    --accent: 221 89% 54%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 20% 90%;
-    --input: 214 20% 90%;
-    --ring: 348 100% 59%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 89% 54%;
 
     --radius: 16px;
 
-    /* Pastel category color tokens (HSL values only — no hsl() wrapper) */
-    --color-energy: 38 97% 72%;
-    --color-technology: 258 89% 86%;
-    --color-geopolitics: 0 93% 82%;
-    --color-politics: 214 95% 78%;
-    --color-macro: 142 77% 73%;
+    /* Blue-based category color tokens (HSL values only — no hsl() wrapper) */
+    --color-energy:      213 93% 68%;
+    --color-technology:  239 84% 67%;
+    --color-geopolitics: 217 91% 60%;
+    --color-politics:    221 89% 54%;
+    --color-macro:       158 64% 52%;
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 20% 12%;
-    --sidebar-primary: 348 100% 59%;
+    --sidebar-foreground: 215 28% 9%;
+    --sidebar-primary: 221 89% 54%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 16% 96%;
-    --sidebar-accent-foreground: 220 20% 12%;
-    --sidebar-border: 214 20% 90%;
-    --sidebar-ring: 348 100% 59%;
+    --sidebar-accent: 210 40% 98%;
+    --sidebar-accent-foreground: 215 28% 9%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 221 89% 54%;
   }
 }
 
@@ -73,7 +73,7 @@
   /* Light card with soft shadow */
   .card-surface {
     background: hsl(var(--card));
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
     border-radius: var(--radius);
   }
 
@@ -86,7 +86,7 @@
 
   .glass-card {
     background: hsl(var(--card));
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
     border: 1px solid hsl(var(--border));
     border-radius: var(--radius);
   }
@@ -97,7 +97,7 @@
 
   .signals-panel-bg {
     background: hsl(var(--card));
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
     border: 1px solid hsl(var(--border));
     border-radius: var(--radius);
   }
@@ -114,7 +114,7 @@
   .typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
   .probability-track {
-    background: hsl(214 20% 94%);
+    background: hsl(214 32% 94%);
   }
 }
 
@@ -130,14 +130,14 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(210 16% 96%);
+  background: hsl(210 40% 98%);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(214 20% 82%);
+  background: hsl(214 32% 82%);
   border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(348 100% 59% / 0.5);
+  background: hsl(221 89% 54% / 0.5);
 }

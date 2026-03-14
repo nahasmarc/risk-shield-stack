@@ -77,7 +77,7 @@ function generateAssistantResponse(input: string, bundle: HedgeBundle | null): s
 const WELCOME_MESSAGE: Message = {
   id: "welcome",
   role: "assistant",
-  content: "Hi! I'm the **Netira AI Risk Builder**.\n\nDescribe a real-world risk you're exposed to and I'll construct a custom hedge bundle from Polymarket prediction markets. You can also tap one of the suggestions below to get started quickly.",
+  content: "Hi! I'm the **PolyBumble AI Risk Builder**.\n\nDescribe a real-world risk you're exposed to and I'll construct a custom hedge bundle from Polymarket prediction markets. You can also tap one of the suggestions below to get started quickly.",
   timestamp: new Date(),
 };
 
@@ -275,11 +275,8 @@ const AIBuilderPage = () => {
                 {msg.role === "user" && (
                   <div className="flex justify-end">
                     <div
-                      className="max-w-sm px-5 py-3.5 rounded-2xl rounded-br-md text-sm font-medium text-white leading-relaxed"
-                      style={{
-                        background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 48%))",
-                        boxShadow: "0 4px 16px hsl(var(--primary) / 0.25)",
-                      }}
+                      className="max-w-sm px-5 py-3.5 rounded-2xl rounded-br-md text-sm font-medium text-primary-foreground leading-relaxed bg-primary"
+                      style={{ boxShadow: "0 4px 16px hsl(var(--primary) / 0.25)" }}
                     >
                       {msg.content}
                     </div>
@@ -291,16 +288,13 @@ const AIBuilderPage = () => {
                   <div className="flex gap-3 items-start">
                     {/* Avatar */}
                     <div
-                      className="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm"
-                      style={{
-                        background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 80% 70%))",
-                      }}
+                      className="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm bg-primary"
                     >
                       <BrainCircuit className="w-4 h-4 text-white" />
                     </div>
                     <div className="flex-1">
                       <p className="text-xs font-semibold text-muted-foreground mb-1.5">
-                        Netira AI
+                        PolyBumble AI
                       </p>
                       <div
                         className="bg-card rounded-2xl rounded-bl-md px-5 py-4"
@@ -341,10 +335,7 @@ const AIBuilderPage = () => {
                 className="flex gap-3 items-start"
               >
                 <div
-                  className="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm"
-                  style={{
-                    background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 80% 70%))",
-                  }}
+                  className="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm bg-primary"
                 >
                   <BrainCircuit className="w-4 h-4 text-white" />
                 </div>
@@ -403,11 +394,8 @@ const AIBuilderPage = () => {
                   <button
                     onClick={() => handleSubmit()}
                     disabled={!input.trim() || isThinking}
-                    className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
-                    style={{
-                      background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 48%))",
-                      boxShadow: "0 2px 8px hsl(var(--primary) / 0.3)",
-                    }}
+                    className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 active:scale-95 bg-primary"
+                    style={{ boxShadow: "0 2px 8px hsl(var(--primary) / 0.3)" }}
                   >
                     <Send className="w-3.5 h-3.5 text-white" />
                   </button>

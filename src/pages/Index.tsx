@@ -56,12 +56,7 @@ const HomePage = () => {
 
           <h1 className="text-5xl font-bold text-foreground mb-5 leading-tight tracking-tight">
             Hedge Real-World Risks with{" "}
-            <span
-              className="bg-clip-text text-transparent"
-            style={{
-              backgroundImage: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 40%))",
-            }}
-            >
+            <span className="text-primary">
               AI-Built Event Portfolios
             </span>
           </h1>
@@ -88,11 +83,8 @@ const HomePage = () => {
               />
               <button
                 onClick={handleHeroSubmit}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
-                style={{
-                  background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 44%))",
-                  boxShadow: "0 4px 16px hsl(var(--primary) / 0.3)",
-                }}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-primary-foreground bg-primary transition-all duration-200 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
+                style={{ boxShadow: "0 4px 16px hsl(var(--primary) / 0.3)" }}
               >
                 Build a Hedge
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -191,7 +183,7 @@ const HomePage = () => {
       <div className="border-t border-border bg-card">
         <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
           <span className="text-sm text-muted-foreground">
-            Netira · Risk Intelligence Platform · v0.1.0
+            PolyBumble · Risk Intelligence Platform · v0.1.0
           </span>
           <span className="text-sm text-muted-foreground">
             Powered by Polymarket

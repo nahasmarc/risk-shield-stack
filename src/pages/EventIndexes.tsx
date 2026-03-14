@@ -222,11 +222,8 @@ function IndexCard({ index, onViewDetail }: { index: EventIndex; onViewDetail: (
           </button>
           <button
             onClick={onViewDetail}
-            className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
-            style={{
-              background: `linear-gradient(135deg, ${index.color}, ${index.accentHex})`,
-              boxShadow: `0 4px 14px ${index.accentHex}60`,
-            }}
+            className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold text-primary-foreground bg-primary transition-all duration-200 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98]"
+            style={{ boxShadow: "0 4px 14px hsl(var(--primary) / 0.3)" }}
           >
             <ExternalLink className="w-3.5 h-3.5" />
             Hedge
@@ -377,7 +374,7 @@ const EventIndexesPage = () => {
       <div className="border-t border-border bg-card">
         <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
           <span className="text-sm text-muted-foreground">
-            Netira · Event Indexes · v0.1.0
+            PolyBumble · Event Indexes · v0.1.0
           </span>
           <span className="text-sm text-muted-foreground">
             Powered by Polymarket
