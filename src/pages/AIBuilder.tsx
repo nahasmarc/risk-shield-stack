@@ -288,10 +288,7 @@ const AIBuilderPage = () => {
                   <div className="flex gap-3 items-start">
                     {/* Avatar */}
                     <div
-                      className="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm"
-                      style={{
-                        background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 80% 70%))",
-                      }}
+                      className="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm bg-primary"
                     >
                       <BrainCircuit className="w-4 h-4 text-white" />
                     </div>
