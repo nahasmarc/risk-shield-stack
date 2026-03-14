@@ -1,9 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { TrendingUp, TrendingDown, ChevronDown, ChevronUp, Droplets, BarChart2, ExternalLink } from "lucide-react";
+import { TrendingUp, TrendingDown, ChevronDown, ChevronUp, Droplets, BarChart2, ExternalLink, Wifi, WifiOff } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
-import { EVENT_INDEXES, type EventIndex, type IndexHistoryPoint } from "@/data/eventIndexes";
+import { EVENT_INDEXES, type EventIndex, type IndexHistoryPoint, type IndexMarket } from "@/data/eventIndexes";
 import { useNavigate } from "react-router-dom";
+import { usePolymarkets, type Market } from "@/hooks/usePolymarkets";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 
 /* ─── Sparkline SVG ─── */
 function Sparkline({
@@ -262,22 +265,71 @@ const containerVariants = {
   show: { transition: { staggerChildren: 0.1 } },
 };
 
+// ── Bundle → Index mapping ──
+const INDEX_BUNDLE_MAP: Record<string, string[]> = {
+  "geopolitical-risk": ["taiwan-conflict"],
+  "ai-regulation": ["ai-regulation"],
+  "inflation-risk": ["oil-shock", "inflation-spike"],
+  "election-volatility": ["us-election-volatility"],
+};
+
+function buildLiveIndexes(markets: Market[]): EventIndex[] {
+  return EVENT_INDEXES.map((staticIndex) => {
+    const bundleIds = INDEX_BUNDLE_MAP[staticIndex.id] ?? [];
+    const liveMarkets = markets.filter((m) =>
+      m.bundleIds.some((bid) => bundleIds.includes(bid))
+    );
+
+    if (liveMarkets.length === 0) return staticIndex;
+
+    const weight = 1 / liveMarkets.length;
+    const indexMarkets: IndexMarket[] = liveMarkets.map((m) => ({
+      id: m.id,
+      title: m.title,
+      probability: m.probability,
+      weight,
+      direction: m.direction,
+      liquidity: m.liquidity,
+      volume: m.volume,
+    }));
+
+    const currentValue = Math.round(
+      indexMarkets.reduce((sum, m) => sum + m.probability * m.weight, 0)
+    );
+
+    // Re-anchor sparkline history to live composite value
+    const history = staticIndex.history.map((pt, i, arr) =>
+      i === arr.length - 1 ? { ...pt, value: currentValue } : pt
+    );
+
+    return {
+      ...staticIndex,
+      markets: indexMarkets,
+      currentValue,
+      history,
+    };
+  });
+}
+
 const EventIndexesPage = () => {
   const navigate = useNavigate();
+  const { markets, loading, dataSource } = usePolymarkets();
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
 
-  const categories = ["ALL", ...Array.from(new Set(EVENT_INDEXES.map((i) => i.category)))];
+  const indexes = useMemo(() => buildLiveIndexes(markets), [markets]);
+
+  const categories = ["ALL", ...Array.from(new Set(indexes.map((i) => i.category)))];
   const filtered =
-    activeCategory === "ALL" ? EVENT_INDEXES : EVENT_INDEXES.filter((i) => i.category === activeCategory);
+    activeCategory === "ALL" ? indexes : indexes.filter((i) => i.category === activeCategory);
 
   const handleHedge = (index: EventIndex) => {
     navigate(`/builder?q=${encodeURIComponent(index.description)}`);
   };
 
   // Aggregate stats
-  const avgValue = Math.round(EVENT_INDEXES.reduce((a, b) => a + b.currentValue, 0) / EVENT_INDEXES.length);
-  const rising = EVENT_INDEXES.filter((i) => i.change7d > 0).length;
-  const totalMarkets = EVENT_INDEXES.reduce((a, b) => a + b.markets.length, 0);
+  const avgValue = Math.round(indexes.reduce((a, b) => a + b.currentValue, 0) / indexes.length);
+  const rising = indexes.filter((i) => i.change7d > 0).length;
+  const totalMarkets = indexes.reduce((a, b) => a + b.markets.length, 0);
 
   return (
     <div className="min-h-screen bg-background">
@@ -294,6 +346,13 @@ const EventIndexesPage = () => {
             <span className="text-xs font-semibold px-3 py-1 rounded-full bg-primary/8 border border-primary/15 text-primary">
               Live Indexes
             </span>
+            <Badge
+              variant={dataSource === "live" ? "default" : "secondary"}
+              className="flex items-center gap-1 text-[10px]"
+            >
+              {dataSource === "live" ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
+              {dataSource === "live" ? "Live Data" : "Mock Data"}
+            </Badge>
           </div>
           <h1 className="text-4xl font-bold text-foreground tracking-tight mb-3">
             Event Indexes
@@ -312,10 +371,10 @@ const EventIndexesPage = () => {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8"
         >
           {[
-            { label: "Active Indexes", value: EVENT_INDEXES.length.toString() },
+            { label: "Active Indexes", value: indexes.length.toString() },
             { label: "Tracked Markets", value: totalMarkets.toString() },
             { label: "Avg Index Value", value: `${avgValue}%` },
-            { label: "Rising Indexes", value: `${rising} / ${EVENT_INDEXES.length}` },
+            { label: "Rising Indexes", value: `${rising} / ${indexes.length}` },
           ].map((stat) => (
             <div
               key={stat.label}
@@ -355,19 +414,27 @@ const EventIndexesPage = () => {
 
       {/* Index grid */}
       <div className="max-w-7xl mx-auto px-6 pb-20">
-        <motion.div
-          key={activeCategory}
-          variants={containerVariants}
-          initial="hidden"
-          animate="show"
-          className="grid grid-cols-1 lg:grid-cols-2 gap-6"
-        >
-          <AnimatePresence>
-            {filtered.map((index) => (
-              <IndexCard key={index.id} index={index} onViewDetail={() => handleHedge(index)} />
+        {loading ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <Skeleton key={i} className="h-[420px] rounded-2xl" />
             ))}
-          </AnimatePresence>
-        </motion.div>
+          </div>
+        ) : (
+          <motion.div
+            key={activeCategory}
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+          >
+            <AnimatePresence>
+              {filtered.map((index) => (
+                <IndexCard key={index.id} index={index} onViewDetail={() => handleHedge(index)} />
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
       </div>
 
       {/* Footer */}
