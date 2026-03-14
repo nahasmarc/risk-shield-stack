@@ -99,28 +99,59 @@ function RichText({ text }: { text: string }) {
   );
 }
 
+interface SavedBundleRecord {
+  id: string;
+  bundle_id: string;
+  bundle_title: string;
+  bundle_category: string;
+  bundle_icon: string;
+  contracts: unknown;
+  created_at: string;
+}
+
 const AIBuilderPage = () => {
-  const [activeTab, setActiveTab] = useState<"chat" | "news">("chat");
+  const [activeTab, setActiveTab] = useState<"chat" | "news" | "saved">("chat");
   const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [isThinking, setIsThinking] = useState(false);
   const [savedBundles, setSavedBundles] = useState<string[]>([]);
+  const [savedBundleRecords, setSavedBundleRecords] = useState<SavedBundleRecord[]>([]);
+  const [loadingSaved, setLoadingSaved] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const autoSubmittedRef = useRef(false);
 
-  // Load saved bundle IDs from DB on mount
+  // Load saved bundles from DB on mount
   useEffect(() => {
     if (!user) return;
+    setLoadingSaved(true);
     supabase
       .from("saved_bundles")
-      .select("bundle_id")
+      .select("*")
       .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
       .then(({ data }) => {
-        if (data) setSavedBundles(data.map((r) => r.bundle_id));
+        if (data) {
+          setSavedBundles(data.map((r) => r.bundle_id));
+          setSavedBundleRecords(data as SavedBundleRecord[]);
+        }
+        setLoadingSaved(false);
       });
   }, [user]);
+
+  // Auto-submit ?q= search param from hero bar
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q && !autoSubmittedRef.current) {
+      autoSubmittedRef.current = true;
+      // Small delay to let the component finish mounting
+      setTimeout(() => handleSubmit(q), 400);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const handleSubmit = async (overrideInput?: string) => {
     const text = (overrideInput ?? input).trim();
