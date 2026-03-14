@@ -9,6 +9,8 @@ import { CATEGORY_CONFIG, HEDGE_BUNDLES, HedgeBundle, getAvgProbability, RISK_LE
 import { ProbabilityGauge } from "@/components/ProbabilityGauge";
 import { useToast } from "@/hooks/use-toast";
 import { buildHedge, type ApiBundle } from "@/lib/api";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Message {
   id: string;
