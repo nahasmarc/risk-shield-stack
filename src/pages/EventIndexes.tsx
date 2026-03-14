@@ -374,7 +374,7 @@ const EventIndexesPage = () => {
             { label: "Active Indexes", value: indexes.length.toString() },
             { label: "Tracked Markets", value: totalMarkets.toString() },
             { label: "Avg Index Value", value: `${avgValue}%` },
-            { label: "Rising Indexes", value: `${rising} / ${EVENT_INDEXES.length}` },
+            { label: "Rising Indexes", value: `${rising} / ${indexes.length}` },
           ].map((stat) => (
             <div
               key={stat.label}
