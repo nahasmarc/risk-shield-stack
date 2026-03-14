@@ -245,8 +245,8 @@ function normaliseMarket(raw: GammaMarket): Market | null {
 //   1. Top 200 by volume (most liquid / high-signal markets)
 //   2. An additional 200 by liquidity (sometimes different set)
 const GAMMA_ENDPOINTS = [
-  "https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=200&order=volumeNum&ascending=false",
-  "https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=200&order=liquidityNum&ascending=false",
+  "https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=500&order=volumeNum&ascending=false",
+  "https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=500&order=liquidityNum&ascending=false",
 ];
 
 // ── In-memory cache ───────────────────────────────────────────────────────────
