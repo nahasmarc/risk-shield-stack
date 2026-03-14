@@ -97,8 +97,8 @@ export const HEDGE_BUNDLES: HedgeBundle[] = [
     description:
       "Guards against a sudden spike in global oil prices driven by OPEC+ supply cuts, Middle East escalation, or sanctions that threaten energy infrastructure.",
     category: "ENERGY",
-    categoryColor: "hsl(24 90% 50%)",
-    categoryPastel: "hsl(38 97% 92%)",
+    categoryColor: "hsl(213 93% 45%)",
+    categoryPastel: "hsl(213 93% 95%)",
     icon: "⛽",
     riskLevel: "HIGH",
     tags: ["energy", "commodities", "geopolitics", "inflation"],
