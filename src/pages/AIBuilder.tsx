@@ -125,30 +125,73 @@ const AIBuilderPage = () => {
     setInput("");
     setIsThinking(true);
 
-    await new Promise((r) => setTimeout(r, 1000 + Math.random() * 700));
+    try {
+      // Call real AI backend
+      const result = await buildHedge(text);
 
-    const bundle = parseBundleFromInput(text);
-    const responseText = generateAssistantResponse(text, bundle);
+      // Map ApiBundle → HedgeBundle for BundleCard compatibility
+      const frontendBundle: HedgeBundle | null = HEDGE_BUNDLES.find(
+        (b) => b.id === result.bundle.id
+      ) ?? null;
 
-    const assistantMsg: Message = {
-      id: crypto.randomUUID(),
-      role: "assistant",
-      content: responseText,
-      timestamp: new Date(),
-    };
+      const catConfig = CATEGORY_CONFIG[result.bundle.category] ?? CATEGORY_CONFIG["MACRO"];
+      const avg = result.bundle.contracts.length > 0
+        ? Math.round(result.bundle.contracts.reduce((s, c) => s + c.probability, 0) / result.bundle.contracts.length)
+        : 0;
 
-    setMessages((prev) => [...prev, assistantMsg]);
+      const responseText = `I've identified a **${catConfig.label}** risk profile from your query.\n\nConstructing the **"${result.bundle.title}"** hedge bundle — ${result.bundle.contracts.length} correlated Polymarket contracts with an aggregate probability of **${avg}%**. Here's your position:`;
 
-    if (bundle) {
-      await new Promise((r) => setTimeout(r, 350));
-      const bundleMsg: Message = {
+      const assistantMsg: Message = {
         id: crypto.randomUUID(),
-        role: "bundle",
-        content: "",
-        bundle,
+        role: "assistant",
+        content: responseText,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, bundleMsg]);
+      setMessages((prev) => [...prev, assistantMsg]);
+
+      if (frontendBundle) {
+        await new Promise((r) => setTimeout(r, 300));
+        const bundleMsg: Message = {
+          id: crypto.randomUUID(),
+          role: "bundle",
+          content: "",
+          bundle: frontendBundle,
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, bundleMsg]);
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Something went wrong.";
+
+      // Graceful degradation: fall back to keyword matching
+      const bundle = parseBundleFromInput(text);
+      const responseText = bundle
+        ? generateAssistantResponse(text, bundle)
+        : `I wasn't able to reach the AI backend right now. ${message}\n\nFalling back to local analysis — try mentioning **oil**, **AI regulation**, **Taiwan**, **election**, or **inflation**.`;
+
+      const assistantMsg: Message = {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: responseText,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, assistantMsg]);
+
+      if (bundle) {
+        await new Promise((r) => setTimeout(r, 300));
+        const bundleMsg: Message = {
+          id: crypto.randomUUID(),
+          role: "bundle",
+          content: "",
+          bundle,
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, bundleMsg]);
+      }
+
+      if (message.includes("Rate limit") || message.includes("credits")) {
+        toast({ title: "AI Limit Reached", description: message, variant: "destructive" });
+      }
     }
 
     setIsThinking(false);
