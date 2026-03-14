@@ -358,14 +358,14 @@ export interface LiveSignal {
 }
 
 export const LIVE_SIGNALS_BASE: LiveSignal[] = [
-  { id: "ls-1", contractTitle: "Brent Crude above $120", bundleCategory: "ENERGY", categoryColor: "#FDBA74", probability: 28, change: +2.3 },
-  { id: "ls-2", contractTitle: "EU AI Act enforcement fine", bundleCategory: "TECHNOLOGY", categoryColor: "#C4B5FD", probability: 52, change: -1.1 },
-  { id: "ls-3", contractTitle: "China military action vs Taiwan", bundleCategory: "GEOPOLITICS", categoryColor: "#FCA5A5", probability: 18, change: +0.8 },
-  { id: "ls-4", contractTitle: "House flips to Democrats 2026", bundleCategory: "POLITICS", categoryColor: "#93C5FD", probability: 44, change: +3.1 },
-  { id: "ls-5", contractTitle: "US CPI above 5% (3 months)", bundleCategory: "MACRO", categoryColor: "#86EFAC", probability: 19, change: -0.6 },
-  { id: "ls-6", contractTitle: "OPEC+ emergency supply cut", bundleCategory: "ENERGY", categoryColor: "#FDBA74", probability: 41, change: +1.7 },
-  { id: "ls-7", contractTitle: "Fed 50bps rate hike", bundleCategory: "MACRO", categoryColor: "#86EFAC", probability: 24, change: -2.4 },
-  { id: "ls-8", contractTitle: "US-China comprehensive sanctions", bundleCategory: "GEOPOLITICS", categoryColor: "#FCA5A5", probability: 27, change: +0.5 },
+  { id: "ls-1", contractTitle: "Brent Crude above $120", bundleCategory: "ENERGY", categoryColor: "#60A5FA", probability: 28, change: +2.3 },
+  { id: "ls-2", contractTitle: "EU AI Act enforcement fine", bundleCategory: "TECHNOLOGY", categoryColor: "#6366F1", probability: 52, change: -1.1 },
+  { id: "ls-3", contractTitle: "China military action vs Taiwan", bundleCategory: "GEOPOLITICS", categoryColor: "#3B82F6", probability: 18, change: +0.8 },
+  { id: "ls-4", contractTitle: "House flips to Democrats 2026", bundleCategory: "POLITICS", categoryColor: "#2563EB", probability: 44, change: +3.1 },
+  { id: "ls-5", contractTitle: "US CPI above 5% (3 months)", bundleCategory: "MACRO", categoryColor: "#10B981", probability: 19, change: -0.6 },
+  { id: "ls-6", contractTitle: "OPEC+ emergency supply cut", bundleCategory: "ENERGY", categoryColor: "#60A5FA", probability: 41, change: +1.7 },
+  { id: "ls-7", contractTitle: "Fed 50bps rate hike", bundleCategory: "MACRO", categoryColor: "#10B981", probability: 24, change: -2.4 },
+  { id: "ls-8", contractTitle: "US-China comprehensive sanctions", bundleCategory: "GEOPOLITICS", categoryColor: "#3B82F6", probability: 27, change: +0.5 },
 ];
 
 export function getBundleById(id: string): HedgeBundle | undefined {
