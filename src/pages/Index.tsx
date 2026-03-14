@@ -56,12 +56,7 @@ const HomePage = () => {
 
           <h1 className="text-5xl font-bold text-foreground mb-5 leading-tight tracking-tight">
             Hedge Real-World Risks with{" "}
-            <span
-              className="bg-clip-text text-transparent"
-            style={{
-              backgroundImage: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 40%))",
-            }}
-            >
+            <span className="text-primary">
               AI-Built Event Portfolios
             </span>
           </h1>
