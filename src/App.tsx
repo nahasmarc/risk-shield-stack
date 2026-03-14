@@ -8,6 +8,7 @@ import BundleDetail from "./pages/BundleDetail.tsx";
 import AIBuilder from "./pages/AIBuilder.tsx";
 import EventIndexes from "./pages/EventIndexes.tsx";
 import Login from "./pages/Login.tsx";
+import Settings from "./pages/Settings.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/indexes" element={<EventIndexes />} />
           <Route path="/builder" element={<AIBuilder />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
