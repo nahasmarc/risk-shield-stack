@@ -15,7 +15,18 @@ import {
   type LiveSignal,
   type Contract,
 } from "@/data/bundles";
-import type { Market } from "@/lib/market-types";
+
+export interface Market {
+  id: string;
+  title: string;
+  probability: number;
+  liquidity: number;
+  volume: number;
+  category: string;
+  direction: "YES" | "NO";
+  tags: string[];
+  bundleIds: string[];
+}
 
 export interface PolymarketsState {
   bundles: HedgeBundle[];
@@ -29,7 +40,7 @@ export interface PolymarketsState {
 
 const REFRESH_INTERVAL_MS = 60_000;
 
-// Merge live markets into a static bundle shell, replacing contracts + derived stats.
+// Merge live markets into a static bundle shell, replacing contracts.
 function buildBundleFromMarkets(
   staticBundle: HedgeBundle,
   markets: Market[]
@@ -37,7 +48,6 @@ function buildBundleFromMarkets(
   const bundleMarkets = markets.filter((m) =>
     m.bundleIds.includes(staticBundle.id)
   );
-
   if (bundleMarkets.length === 0) return staticBundle;
 
   const contracts: Contract[] = bundleMarkets.map((m) => ({
@@ -47,7 +57,7 @@ function buildBundleFromMarkets(
     liquidity: m.liquidity,
     volume: m.volume,
     category: m.category,
-    direction: m.direction as "YES" | "NO",
+    direction: m.direction,
   }));
 
   return { ...staticBundle, contracts };
@@ -58,7 +68,6 @@ function buildSignalsFromMarkets(
   markets: Market[],
   bundles: HedgeBundle[]
 ): LiveSignal[] {
-  // Build a quick lookup: bundleId → categoryColor
   const colorMap: Record<string, string> = {};
   for (const b of bundles) {
     colorMap[b.id] = b.categoryColor;
@@ -66,7 +75,6 @@ function buildSignalsFromMarkets(
 
   const sorted = [...markets].sort((a, b) => b.liquidity - a.liquidity);
   const top8 = sorted.slice(0, 8);
-
   if (top8.length === 0) return LIVE_SIGNALS_BASE;
 
   return top8.map((m, i) => {
@@ -74,7 +82,8 @@ function buildSignalsFromMarkets(
     const staticSignal = LIVE_SIGNALS_BASE[i];
     return {
       id: `ls-live-${m.id}`,
-      contractTitle: m.title.length > 40 ? m.title.slice(0, 40) + "…" : m.title,
+      contractTitle:
+        m.title.length > 42 ? m.title.slice(0, 42) + "…" : m.title,
       bundleCategory: m.category,
       categoryColor:
         colorMap[bundleId] ?? staticSignal?.categoryColor ?? "#6366F1",
@@ -122,7 +131,10 @@ export function usePolymarkets(): PolymarketsState {
         lastFetched: new Date(),
       });
     } catch (err) {
-      console.warn("[usePolymarkets] API unavailable, using static fallback:", err);
+      console.warn(
+        "[usePolymarkets] API unavailable, using static fallback:",
+        err
+      );
       setState((prev) => ({
         ...prev,
         loading: false,

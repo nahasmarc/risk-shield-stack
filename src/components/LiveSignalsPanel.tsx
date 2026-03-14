@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TrendingUp, TrendingDown, Radio } from "lucide-react";
-import { LIVE_SIGNALS_BASE, LiveSignal } from "@/data/bundles";
+import { LIVE_SIGNALS_BASE, type LiveSignal } from "@/data/bundles";
 
 interface SignalState extends LiveSignal {
   currentProb: number;
@@ -15,9 +15,16 @@ function randomWalk(prev: number): number {
   return Math.max(2, Math.min(97, Math.round(next * 10) / 10));
 }
 
-export function LiveSignalsPanel() {
-  const [signals, setSignals] = useState<SignalState[]>(
-    LIVE_SIGNALS_BASE.map((s) => ({
+interface LiveSignalsPanelProps {
+  /** Live signals seeded from the API. Falls back to LIVE_SIGNALS_BASE if undefined. */
+  signals?: LiveSignal[];
+}
+
+export function LiveSignalsPanel({ signals }: LiveSignalsPanelProps) {
+  const source = signals ?? LIVE_SIGNALS_BASE;
+
+  const [signalStates, setSignalStates] = useState<SignalState[]>(
+    source.map((s) => ({
       ...s,
       currentProb: s.probability,
       currentChange: s.change,
@@ -27,11 +34,24 @@ export function LiveSignalsPanel() {
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // Re-seed when live signals prop arrives/updates
+  useEffect(() => {
+    setSignalStates(
+      source.map((s) => ({
+        ...s,
+        currentProb: s.probability,
+        currentChange: s.change,
+        isUpdating: false,
+      }))
+    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [signals]);
+
   useEffect(() => {
     tickRef.current = setInterval(() => {
-      const idxToUpdate = Math.floor(Math.random() * LIVE_SIGNALS_BASE.length);
+      const idxToUpdate = Math.floor(Math.random() * source.length);
 
-      setSignals((prev) =>
+      setSignalStates((prev) =>
         prev.map((s, i) => {
           if (i !== idxToUpdate) return { ...s, isUpdating: false };
           const newProb = randomWalk(s.currentProb);
@@ -42,14 +62,15 @@ export function LiveSignalsPanel() {
       setLastUpdate(new Date());
 
       setTimeout(() => {
-        setSignals((prev) => prev.map((s) => ({ ...s, isUpdating: false })));
+        setSignalStates((prev) => prev.map((s) => ({ ...s, isUpdating: false })));
       }, 800);
     }, 3500);
 
     return () => {
       if (tickRef.current) clearInterval(tickRef.current);
     };
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [source.length]);
 
   const formatTime = (d: Date) =>
     d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
@@ -74,7 +95,7 @@ export function LiveSignalsPanel() {
 
       {/* Signal rows */}
       <div className="flex-1 overflow-y-auto divide-y divide-border/50">
-        {signals.map((signal) => (
+        {signalStates.map((signal) => (
           <SignalRow key={signal.id} signal={signal} />
         ))}
       </div>

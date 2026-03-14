@@ -5,8 +5,9 @@ import { HedgeCard } from "@/components/HedgeCard";
 import { LiveSignalsPanel } from "@/components/LiveSignalsPanel";
 import { EventRiskMap } from "@/components/EventRiskMap";
 import { AIRiskFeed } from "@/components/AIRiskFeed";
-import { HEDGE_BUNDLES, getTotalLiquidity, formatMillions } from "@/data/bundles";
-import { Shield, ArrowRight, Search } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { usePolymarkets } from "@/hooks/usePolymarkets";
+import { Shield, ArrowRight, Search, Wifi, WifiOff } from "lucide-react";
 import { useState } from "react";
 
 const containerVariants = {
@@ -16,17 +17,10 @@ const containerVariants = {
   },
 };
 
-const totalLiquidity = HEDGE_BUNDLES.reduce((acc, b) => acc + getTotalLiquidity(b), 0);
-const avgCoverage = Math.round(
-  HEDGE_BUNDLES.reduce((acc, b) => {
-    const avg = b.contracts.reduce((s, c) => s + c.probability, 0) / b.contracts.length;
-    return acc + avg;
-  }, 0) / HEDGE_BUNDLES.length
-);
-
 const HomePage = () => {
   const [heroInput, setHeroInput] = useState("");
   const navigate = useNavigate();
+  const { bundles, signals, loading, dataSource } = usePolymarkets();
 
   const handleHeroSubmit = () => {
     if (heroInput.trim()) {
@@ -92,8 +86,6 @@ const HomePage = () => {
             </div>
           </div>
         </motion.div>
-
-        {/* Stats bar */}
       </div>
 
       {/* Event Risk Network */}
@@ -126,21 +118,48 @@ const HomePage = () => {
               <h2 className="text-lg font-semibold text-foreground">
                 Available Hedge Bundles
               </h2>
-              <span className="text-sm text-muted-foreground">
-                {HEDGE_BUNDLES.length} bundles
-              </span>
+              <div className="flex items-center gap-3">
+                {/* Data source badge */}
+                {!loading && (
+                  <span
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wide border ${
+                      dataSource === "live"
+                        ? "bg-green-50 border-green-100 text-green-700"
+                        : "bg-yellow-50 border-yellow-100 text-yellow-700"
+                    }`}
+                  >
+                    {dataSource === "live" ? (
+                      <Wifi className="w-3 h-3" />
+                    ) : (
+                      <WifiOff className="w-3 h-3" />
+                    )}
+                    {dataSource === "live" ? "Live Data" : "Mock Data"}
+                  </span>
+                )}
+                <span className="text-sm text-muted-foreground">
+                  {loading ? "—" : `${bundles.length} bundles`}
+                </span>
+              </div>
             </div>
 
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="show"
-              className="grid grid-cols-1 md:grid-cols-2 gap-5"
-            >
-              {HEDGE_BUNDLES.map((bundle, i) => (
-                <HedgeCard key={bundle.id} bundle={bundle} index={i} />
-              ))}
-            </motion.div>
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {[...Array(4)].map((_, i) => (
+                  <Skeleton key={i} className="h-52 rounded-2xl" />
+                ))}
+              </div>
+            ) : (
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+                className="grid grid-cols-1 md:grid-cols-2 gap-5"
+              >
+                {bundles.map((bundle, i) => (
+                  <HedgeCard key={bundle.id} bundle={bundle} index={i} />
+                ))}
+              </motion.div>
+            )}
           </div>
 
           {/* Right sidebar: Live Signals + AI Risk Feed */}
@@ -150,7 +169,7 @@ const HomePage = () => {
             transition={{ delay: 0.3, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="hidden xl:flex xl:flex-col w-72 flex-shrink-0 sticky top-[5rem] gap-5 max-h-[calc(100vh-6rem)] overflow-y-auto pb-4"
           >
-            <LiveSignalsPanel />
+            <LiveSignalsPanel signals={loading ? undefined : signals} />
             <AIRiskFeed />
           </motion.div>
         </div>
