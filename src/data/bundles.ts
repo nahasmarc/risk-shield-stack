@@ -199,8 +199,8 @@ export const HEDGE_BUNDLES: HedgeBundle[] = [
     description:
       "Provides coverage for the economic and supply chain impact of a Taiwan Strait crisis, including semiconductor disruption, US sanctions, and tech sector collapse.",
     category: "GEOPOLITICS",
-    categoryColor: "hsl(0 72% 51%)",
-    categoryPastel: "hsl(0 93% 95%)",
+    categoryColor: "hsl(217 91% 45%)",
+    categoryPastel: "hsl(217 91% 95%)",
     icon: "🌏",
     riskLevel: "CRITICAL",
     tags: ["taiwan", "china", "semiconductors", "geopolitics", "supply-chain"],
