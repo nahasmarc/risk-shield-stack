@@ -1,12 +1,28 @@
 /**
  * src/lib/api.ts
- * Typed fetch helpers for the Netira AI backend edge functions.
- * All calls go through Supabase edge functions.
+ * Typed fetch helpers for the PolyBumble backend edge functions.
  */
 
 const BASE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`;
 
+// ── GET /health — Polymarket connection status ────────────────────────────────
+
+export interface HealthResponse {
+  dataSource: "live" | "mock";
+  marketCount: number;
+  cachedAt: string | null;
+  polymarketApiUrl: string;
+}
+
+export async function getDataSourceHealth(): Promise<HealthResponse> {
+  const res = await fetch(`${BASE_URL}/health`);
+  if (!res.ok) throw new Error(`Health check failed (${res.status})`);
+  return res.json();
+}
+
+
 // ── Shared types mirroring the edge function responses ──────────────────────
+
 
 export interface DetectedRisk {
   riskCategory: "ENERGY" | "TECHNOLOGY" | "GEOPOLITICS" | "POLITICS" | "MACRO" | "UNKNOWN";
