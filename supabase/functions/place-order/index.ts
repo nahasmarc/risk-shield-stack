@@ -31,15 +31,15 @@ serve(async (req) => {
       { global: { headers: { Authorization: authHeader } } }
     );
 
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
+    // Use getUser instead of deprecated getClaims
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    const userId = claimsData.claims.sub;
+    const userId = user.id;
 
     // Get user's Polymarket credentials
     const { data: creds, error: credsError } = await supabase
@@ -56,7 +56,17 @@ serve(async (req) => {
     }
 
     // Parse order request
-    const { tokenId, side, size, price } = await req.json();
+    const {
+      tokenId,
+      side,
+      size,
+      price,
+      bundleId,
+      bundleTitle,
+      contractId,
+      contractTitle,
+    } = await req.json();
+
     if (!tokenId || !side || !size || !price) {
       return new Response(
         JSON.stringify({ error: "Missing required fields: tokenId, side, size, price" }),
@@ -98,11 +108,43 @@ serve(async (req) => {
 
     if (!clobResponse.ok) {
       console.error("CLOB API error:", result);
+
+      // Save failed order to history
+      if (bundleId && contractId) {
+        await supabase.from("orders").insert({
+          user_id: userId,
+          bundle_id: bundleId || "unknown",
+          bundle_title: bundleTitle || "Unknown Bundle",
+          contract_id: contractId || tokenId,
+          contract_title: contractTitle || tokenId,
+          side: side.toUpperCase(),
+          size: parseFloat(size),
+          price: parseFloat(price),
+          status: "failed",
+          polymarket_order_id: null,
+        });
+      }
+
       return new Response(
         JSON.stringify({ error: result.message || "Polymarket order failed", details: result }),
         { status: clobResponse.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    // Save successful order to history
+    const orderId = result.orderID || result.id || null;
+    await supabase.from("orders").insert({
+      user_id: userId,
+      bundle_id: bundleId || "unknown",
+      bundle_title: bundleTitle || "Unknown Bundle",
+      contract_id: contractId || tokenId,
+      contract_title: contractTitle || tokenId,
+      side: side.toUpperCase(),
+      size: parseFloat(size),
+      price: parseFloat(price),
+      status: "filled",
+      polymarket_order_id: orderId,
+    });
 
     return new Response(JSON.stringify({ success: true, order: result }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

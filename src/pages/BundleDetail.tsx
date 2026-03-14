@@ -179,9 +179,9 @@ const BundleDetailPage = () => {
             >
               <Info className="w-4 h-4 text-primary/60 mt-0.5 shrink-0" />
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Simulated platform — This is a prototype. Probabilities are sourced
-                from Polymarket mock data. No real financial transactions occur.
-                Not financial advice.
+                Probabilities sourced from live Polymarket data. Hedge orders execute
+                real limit orders via the Polymarket CLOB API using your connected account.
+                Not financial advice — trade responsibly.
               </p>
             </motion.div>
           </div>
