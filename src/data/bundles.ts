@@ -250,8 +250,8 @@ export const HEDGE_BUNDLES: HedgeBundle[] = [
     description:
       "Shields against electoral uncertainty including contested results, sharp policy reversals, and the equity market correction that historically follows high-tension election cycles.",
     category: "POLITICS",
-    categoryColor: "hsl(213 80% 50%)",
-    categoryPastel: "hsl(214 95% 93%)",
+    categoryColor: "hsl(221 89% 40%)",
+    categoryPastel: "hsl(221 89% 95%)",
     icon: "🗳️",
     riskLevel: "HIGH",
     tags: ["election", "US politics", "volatility", "policy", "markets"],
