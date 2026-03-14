@@ -37,7 +37,7 @@ const Login = () => {
           <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center">
             <Shield className="w-7 h-7 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">PolyBumble</h1>
+          <h1 className="text-2xl font-bold text-foreground">PolyBundle</h1>
           <p className="text-sm text-muted-foreground">The future of insurance — sign in to get started</p>
         </div>
 

@@ -1,6 +1,6 @@
 /**
  * src/lib/api.ts
- * Typed fetch helpers for the PolyBumble backend edge functions.
+ * Typed fetch helpers for the PolyBundle backend edge functions.
  */
 
 const BASE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`;
