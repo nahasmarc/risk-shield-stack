@@ -372,6 +372,9 @@ const AIBuilderPage = () => {
           </p>
         </div>
       </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
