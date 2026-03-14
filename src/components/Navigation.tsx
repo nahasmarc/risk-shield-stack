@@ -63,7 +63,7 @@ export function Navigation() {
             <Zap className="w-4 h-4 text-primary-foreground" />
           </div>
           <span className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors duration-200">
-            PolyBumble
+            PolyBundle
           </span>
         </Link>
 

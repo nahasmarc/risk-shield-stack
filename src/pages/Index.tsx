@@ -62,7 +62,7 @@ const HomePage = () => {
           </h1>
 
           <p className="text-lg text-muted-foreground leading-relaxed mb-10 max-w-xl mx-auto">
-            Dynamic coverage backed by real-world event data. PolyBumble replaces
+            Dynamic coverage backed by real-world event data. PolyBundle replaces
             static policies with intelligent protection that moves with the markets.
           </p>
 
@@ -183,7 +183,7 @@ const HomePage = () => {
       <div className="border-t border-border bg-card">
         <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
           <span className="text-sm text-muted-foreground">
-            PolyBumble · The Future of Insurance · v0.1.0
+            PolyBundle · The Future of Insurance · v0.1.0
           </span>
           <span className="text-sm text-muted-foreground">
             Powered by Polymarket

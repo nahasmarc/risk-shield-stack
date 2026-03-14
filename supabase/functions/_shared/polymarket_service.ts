@@ -207,7 +207,7 @@ async function fetchFromEndpoint(url: string): Promise<GammaMarket[]> {
   const res = await fetch(url, {
     headers: {
       Accept: "application/json",
-      "User-Agent": "PolyBumble/1.0 (hackathon)",
+      "User-Agent": "PolyBundle/1.0 (hackathon)",
     },
     signal: AbortSignal.timeout(10_000),
   });
