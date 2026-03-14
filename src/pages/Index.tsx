@@ -62,7 +62,7 @@ const HomePage = () => {
           </h1>
 
           <p className="text-lg text-muted-foreground leading-relaxed mb-10 max-w-xl mx-auto">
-            Dynamic coverage backed by real-world event data. PolyBumble replaces
+            Dynamic coverage backed by real-world event data. PolyBundle replaces
             static policies with intelligent protection that moves with the markets.
           </p>
 
