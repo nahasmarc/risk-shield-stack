@@ -371,7 +371,7 @@ const EventIndexesPage = () => {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8"
         >
           {[
-            { label: "Active Indexes", value: EVENT_INDEXES.length.toString() },
+            { label: "Active Indexes", value: indexes.length.toString() },
             { label: "Tracked Markets", value: totalMarkets.toString() },
             { label: "Avg Index Value", value: `${avgValue}%` },
             { label: "Rising Indexes", value: `${rising} / ${EVENT_INDEXES.length}` },
