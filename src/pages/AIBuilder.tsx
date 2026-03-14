@@ -96,6 +96,7 @@ function RichText({ text }: { text: string }) {
 }
 
 const AIBuilderPage = () => {
+  const [activeTab, setActiveTab] = useState<"chat" | "news">("chat");
   const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [isThinking, setIsThinking] = useState(false);
