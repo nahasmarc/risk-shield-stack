@@ -9,6 +9,8 @@ import { getAllMarkets } from "./market_fetcher.ts";
 
 export interface BundleContract {
   id: string;
+  slug?: string;
+  yesTokenId?: string;
   title: string;
   probability: number;
   liquidity: number;

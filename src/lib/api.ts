@@ -39,6 +39,8 @@ export interface DetectedRisk {
 
 export interface ApiContract {
   id: string;
+  slug?: string;
+  yesTokenId?: string;
   title: string;
   probability: number;
   liquidity: number;
