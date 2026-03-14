@@ -1,12 +1,13 @@
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Info } from "lucide-react";
+import { ArrowLeft, Info, Wifi, WifiOff } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { ContractRow } from "@/components/ContractRow";
 import { CoverageCalculator } from "@/components/CoverageCalculator";
 import { HedgeEffectivenessScore } from "@/components/HedgeEffectivenessScore";
+import { Skeleton } from "@/components/ui/skeleton";
+import { usePolymarkets } from "@/hooks/usePolymarkets";
 import {
-  getBundleById,
   getAvgProbability,
   getTotalLiquidity,
   getTotalVolume,
@@ -24,9 +25,11 @@ const containerVariants = {
 
 const BundleDetailPage = () => {
   const { id } = useParams<{ id: string }>();
-  const bundle = getBundleById(id || "");
+  const { bundles, loading, dataSource } = usePolymarkets();
 
-  if (!bundle) {
+  const bundle = bundles.find((b) => b.id === (id ?? ""));
+
+  if (!loading && !bundle) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -34,6 +37,33 @@ const BundleDetailPage = () => {
           <Link to="/" className="text-primary font-medium text-sm hover:underline">
             ← Return to Dashboard
           </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Loading skeleton while markets are being fetched
+  if (loading || !bundle) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="max-w-7xl mx-auto px-6 py-10 space-y-6">
+          <Skeleton className="h-6 w-36 rounded-lg" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-6">
+              <Skeleton className="h-48 rounded-2xl" />
+              <div className="grid grid-cols-3 gap-4">
+                <Skeleton className="h-20 rounded-2xl" />
+                <Skeleton className="h-20 rounded-2xl" />
+                <Skeleton className="h-20 rounded-2xl" />
+              </div>
+              <Skeleton className="h-64 rounded-2xl" />
+            </div>
+            <div className="space-y-4">
+              <Skeleton className="h-48 rounded-2xl" />
+              <Skeleton className="h-64 rounded-2xl" />
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -56,7 +86,7 @@ const BundleDetailPage = () => {
           initial={{ opacity: 0, x: -8 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.3 }}
-          className="mb-8"
+          className="mb-8 flex items-center justify-between"
         >
           <Link
             to="/"
@@ -65,6 +95,22 @@ const BundleDetailPage = () => {
             <ArrowLeft className="w-4 h-4" />
             Back to Dashboard
           </Link>
+
+          {/* Data source badge */}
+          <span
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wide border ${
+              dataSource === "live"
+                ? "bg-green-50 border-green-100 text-green-700"
+                : "bg-yellow-50 border-yellow-100 text-yellow-700"
+            }`}
+          >
+            {dataSource === "live" ? (
+              <Wifi className="w-3 h-3" />
+            ) : (
+              <WifiOff className="w-3 h-3" />
+            )}
+            {dataSource === "live" ? "Live Data" : "Mock Data"}
+          </span>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
