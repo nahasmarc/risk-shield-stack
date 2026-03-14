@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { usePolymarkets, type Market } from "@/hooks/usePolymarkets";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { formatMillions } from "@/lib/utils";
 
 /* ─── Sparkline SVG ─── */
 function Sparkline({

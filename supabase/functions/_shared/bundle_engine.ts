@@ -103,6 +103,8 @@ async function hydrateBundleContracts(bundle: HedgeBundle): Promise<HedgeBundle>
     ...bundle,
     contracts: markets.map((m) => ({
       id: m.id,
+      slug: m.slug,
+      yesTokenId: m.yesTokenId,
       title: m.title,
       probability: m.probability,
       liquidity: m.liquidity,
