@@ -275,11 +275,8 @@ const AIBuilderPage = () => {
                 {msg.role === "user" && (
                   <div className="flex justify-end">
                     <div
-                      className="max-w-sm px-5 py-3.5 rounded-2xl rounded-br-md text-sm font-medium text-white leading-relaxed"
-                      style={{
-                        background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 48%))",
-                        boxShadow: "0 4px 16px hsl(var(--primary) / 0.25)",
-                      }}
+                      className="max-w-sm px-5 py-3.5 rounded-2xl rounded-br-md text-sm font-medium text-primary-foreground leading-relaxed bg-primary"
+                      style={{ boxShadow: "0 4px 16px hsl(var(--primary) / 0.25)" }}
                     >
                       {msg.content}
                     </div>
