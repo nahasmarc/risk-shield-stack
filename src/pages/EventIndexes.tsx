@@ -346,6 +346,13 @@ const EventIndexesPage = () => {
             <span className="text-xs font-semibold px-3 py-1 rounded-full bg-primary/8 border border-primary/15 text-primary">
               Live Indexes
             </span>
+            <Badge
+              variant={dataSource === "live" ? "default" : "secondary"}
+              className="flex items-center gap-1 text-[10px]"
+            >
+              {dataSource === "live" ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
+              {dataSource === "live" ? "Live Data" : "Mock Data"}
+            </Badge>
           </div>
           <h1 className="text-4xl font-bold text-foreground tracking-tight mb-3">
             Event Indexes
