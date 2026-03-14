@@ -433,8 +433,11 @@ export function NewsToHedge({ onSaveBundle }: { onSaveBundle?: (b: HedgeBundle) 
               </div>
 
               <div className="flex items-center justify-between gap-4">
-                <div>
+                <div className="flex-1 min-w-0">
                   <p className="text-xl font-bold text-foreground">{result.detectedRisk.riskLabel}</p>
+                  {result.detectedRisk.riskType && (
+                    <p className="text-xs font-medium text-primary mt-0.5 capitalize">{result.detectedRisk.riskType}</p>
+                  )}
                   <p className="text-xs text-muted-foreground mt-1">
                     Triggered by keyword: <span className="font-semibold text-foreground">"{result.detectedRisk.keyword}"</span>
                   </p>
@@ -450,6 +453,24 @@ export function NewsToHedge({ onSaveBundle }: { onSaveBundle?: (b: HedgeBundle) 
                   </div>
                 </div>
               </div>
+
+              {/* Signal tags — sector & region */}
+              {(result.detectedRisk.sector || result.detectedRisk.region) && (
+                <div className="flex flex-wrap items-center gap-2 mt-3">
+                  {result.detectedRisk.sector && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-primary/8 text-primary border border-primary/20 capitalize">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                      {result.detectedRisk.sector}
+                    </span>
+                  )}
+                  {result.detectedRisk.region && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-muted text-muted-foreground border border-border/60 capitalize">
+                      <span className="text-[10px]">📍</span>
+                      {result.detectedRisk.region}
+                    </span>
+                  )}
+                </div>
+              )}
 
               {/* Category tag */}
               {(() => {
