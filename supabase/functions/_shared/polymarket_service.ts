@@ -14,7 +14,6 @@ import type { Market, MarketsFilter } from "./market_fetcher.ts";
 import { MOCK_MARKETS } from "./market_fetcher.ts";
 
 // ── Gamma API response shape ───────────────────────────────────────────────────
-// Full reference: https://gamma-api.polymarket.com/markets (GET)
 
 interface GammaToken {
   token_id: string;
@@ -25,61 +24,49 @@ interface GammaToken {
 
 interface GammaMarket {
   id: string;
+  slug?: string;             // event slug for polymarket.com/event/{slug}
   question: string;
   description?: string;
-  // Nested tokens array — used when ?include_tokens=true
   tokens?: GammaToken[];
-  // Flat probability fields on some endpoints
-  outcomePrices?: string;          // JSON string e.g. '["0.28","0.72"]'
-  // Liquidity / volume in USD (not millions — raw dollars)
+  outcomePrices?: string;    // JSON string e.g. '["0.28","0.72"]'
   liquidityNum?: number;
   volumeNum?: number;
   volume24hr?: number;
-  // Status
   active?: boolean;
   closed?: boolean;
   archived?: boolean;
-  // Tags
   tags?: Array<{ id: string; label: string; slug?: string }>;
 }
 
-// ── Keyword → Bundle classification map ──────────────────────────────────────
+// ── Blocklist ─────────────────────────────────────────────────────────────────
 
-// ── Blocklist: topics that must NEVER appear in any bundle ────────────────────
-// If ANY of these phrases appear in the market title, the market is dropped entirely.
 const BLOCKLIST_PHRASES: string[] = [
-  // Sports & games
   "gta", "grand theft auto", "world cup", "fifa", "masters tournament",
   "champions league", "super bowl", "nba", "nfl", "mlb", "nhl", "ufc",
   "wimbledon", "us open", "french open", "australian open", "formula 1",
   "f1", "pga", "golf", "tennis", "soccer", "football championship",
   "basketball", "baseball", "hockey", "olympic", "esport",
-  // Entertainment / pop culture
   "oscar", "grammy", "emmy", "golden globe", "box office", "film",
   "movie", "album", "song", "taylor swift", "spotify", "netflix",
   "youtube", "twitch", "celebrity", "kardashian",
-  // Crypto / meme speculative
   "dogecoin", "shiba", "memecoin", "nft ", "metaverse", "minecraft",
   "fortnite", "roblox", "pokemon", "anime",
-  // Religion / supernatural / joke markets
   "jesus christ", "god ", "alien", "ufo", "extraterrestrial", "bigfoot",
   "zombie", "apocalypse",
-  // Unrelated science
   "measles", "covid", "pandemic", "flu ", "hurricane name",
 ];
 
-// ── Category keyword bundles — require ≥2 distinct keywords to match ──────────
-// Each entry has a required minimum match count to reduce false positives.
+// ── Bundle keyword map ────────────────────────────────────────────────────────
+
 interface BundleEntry {
   keywords: string[];
   bundleId: string;
   category: string;
-  minMatches: number; // minimum distinct keywords that must match
+  minMatches: number;
 }
 
 const KEYWORD_BUNDLE_MAP: BundleEntry[] = [
   {
-    // Energy / oil shock — strict commodity terms only
     keywords: [
       "crude oil", "oil price", "oil shock", "opec", "brent", "wti",
       "petroleum", "natural gas", "lng", "gasoline price", "fuel price",
@@ -87,10 +74,9 @@ const KEYWORD_BUNDLE_MAP: BundleEntry[] = [
     ],
     bundleId: "oil-shock",
     category: "ENERGY",
-    minMatches: 1, // these are very specific, 1 match is fine
+    minMatches: 1,
   },
   {
-    // AI regulation — must mention AI governance/policy specifically
     keywords: [
       "artificial intelligence regulation", "ai regulation", "ai ban",
       "ai safety bill", "eu ai act", "ai policy", "frontier model",
@@ -102,7 +88,6 @@ const KEYWORD_BUNDLE_MAP: BundleEntry[] = [
     minMatches: 1,
   },
   {
-    // Geopolitics — military/territorial conflict specific
     keywords: [
       "taiwan invasion", "china invade taiwan", "taiwan strait",
       "tsmc", "semiconductor war", "chip ban", "ukraine war",
@@ -117,7 +102,6 @@ const KEYWORD_BUNDLE_MAP: BundleEntry[] = [
     minMatches: 1,
   },
   {
-    // US Politics — election and governance specific
     keywords: [
       "us presidential election", "presidential nomination",
       "democratic nomination", "republican nomination",
@@ -132,7 +116,6 @@ const KEYWORD_BUNDLE_MAP: BundleEntry[] = [
     minMatches: 1,
   },
   {
-    // Macro / inflation — financial indicators
     keywords: [
       "inflation rate", "cpi report", "core inflation",
       "federal reserve rate", "interest rate hike", "rate cut",
@@ -153,7 +136,6 @@ function classifyMarket(question: string, description: string, tags: string[]): 
 } {
   const text = [question, description, ...tags].join(" ").toLowerCase();
 
-  // ── Hard blocklist check — drop market entirely if any phrase matches ──────
   for (const phrase of BLOCKLIST_PHRASES) {
     if (text.includes(phrase)) {
       return { bundleIds: [], category: "OTHER" };
@@ -176,10 +158,9 @@ function classifyMarket(question: string, description: string, tags: string[]): 
   return { bundleIds: matchedBundleIds, category };
 }
 
-// ── Parse probability from multiple field shapes ──────────────────────────────
+// ── Parse probability ─────────────────────────────────────────────────────────
 
 function parseProbability(raw: GammaMarket): number {
-  // Shape 1: tokens array with price per outcome
   if (raw.tokens && raw.tokens.length > 0) {
     const yesToken = raw.tokens.find(
       (t) => t.outcome.toLowerCase() === "yes"
@@ -187,12 +168,10 @@ function parseProbability(raw: GammaMarket): number {
     if (yesToken && typeof yesToken.price === "number") {
       return Math.round(yesToken.price * 100);
     }
-    // fallback: use first token price
     const first = raw.tokens[0];
     if (typeof first?.price === "number") return Math.round(first.price * 100);
   }
 
-  // Shape 2: outcomePrices JSON string '["0.28","0.72"]'
   if (raw.outcomePrices) {
     try {
       const prices = JSON.parse(raw.outcomePrices) as (string | number)[];
@@ -203,11 +182,17 @@ function parseProbability(raw: GammaMarket): number {
     }
   }
 
-  return 50; // unknown — default to 50%
+  return 50;
+}
+
+// Extract the YES outcome CLOB token_id (256-bit hex) from the tokens array
+function parseYesTokenId(raw: GammaMarket): string | undefined {
+  if (!raw.tokens || raw.tokens.length === 0) return undefined;
+  const yesToken = raw.tokens.find((t) => t.outcome.toLowerCase() === "yes");
+  return yesToken?.token_id ?? raw.tokens[0]?.token_id;
 }
 
 function normaliseMarket(raw: GammaMarket): Market | null {
-  // Skip closed / archived markets
   if (raw.closed === true || raw.archived === true) return null;
   if (raw.active === false) return null;
 
@@ -218,18 +203,17 @@ function normaliseMarket(raw: GammaMarket): Market | null {
     tagLabels
   );
 
-  // Only keep markets that map to at least one bundle
   if (bundleIds.length === 0) return null;
 
   const probability = parseProbability(raw);
-  // Filter out already-resolved markets (price pinned at 0 or 100)
   if (probability <= 1 || probability >= 99) return null;
 
   return {
     id: raw.id,
+    slug: raw.slug,
+    yesTokenId: parseYesTokenId(raw),
     title: raw.question,
     probability,
-    // Gamma API returns raw USD — convert to millions (cap at $999M)
     liquidity: Math.min((raw.liquidityNum ?? 0) / 1_000_000, 999),
     volume: Math.min((raw.volumeNum ?? 0) / 1_000_000, 999),
     category,
@@ -239,19 +223,80 @@ function normaliseMarket(raw: GammaMarket): Market | null {
   };
 }
 
+// ── Deduplication: strip near-identical strike-price variants ─────────────────
+// Markets that share the same "stem" (title minus any numbers/symbols) are
+// grouped and only the most liquid one per stem+bundle is kept.
+// Also caps each bundle at MAX_PER_BUNDLE markets sorted by liquidity desc.
+
+const MAX_PER_BUNDLE = 6;
+
+function titleStem(title: string): string {
+  // Remove numbers, currency symbols, common suffixes → canonical stem
+  return title
+    .toLowerCase()
+    .replace(/\$[\d,]+(\.\d+)?/g, "")     // $85, $100.5
+    .replace(/\d+(\.\d+)?%/g, "")          // 80%
+    .replace(/\b\d{1,4}\b/g, "")           // standalone numbers
+    .replace(/[^\w\s]/g, " ")              // punctuation
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function deduplicateMarkets(markets: Market[]): Market[] {
+  // Group by bundleId × titleStem, keep highest-liquidity representative
+  const bundles = new Map<string, Market[]>();
+
+  for (const market of markets) {
+    for (const bundleId of market.bundleIds) {
+      if (!bundles.has(bundleId)) bundles.set(bundleId, []);
+      bundles.get(bundleId)!.push(market);
+    }
+  }
+
+  const kept = new Set<string>();
+  for (const [, bundleMarkets] of bundles) {
+    // Sort by liquidity desc
+    const sorted = [...bundleMarkets].sort((a, b) => b.liquidity - a.liquidity);
+
+    // Group by stem within this bundle
+    const stemSeen = new Map<string, string>(); // stem → id of kept market
+
+    for (const m of sorted) {
+      const stem = titleStem(m.title);
+      if (!stemSeen.has(stem)) {
+        stemSeen.set(stem, m.id);
+        kept.add(m.id + "::" + m.bundleIds[0]);
+      }
+      // Break once we have enough distinct markets for this bundle
+      if (stemSeen.size >= MAX_PER_BUNDLE) break;
+    }
+  }
+
+  // Return markets that were kept in at least one bundle, trimming bundleIds to kept ones
+  const result: Market[] = [];
+  const seen = new Set<string>();
+
+  for (const market of markets) {
+    const keptBundles = market.bundleIds.filter(
+      (bid) => kept.has(market.id + "::" + bid)
+    );
+    if (keptBundles.length > 0 && !seen.has(market.id)) {
+      seen.add(market.id);
+      result.push({ ...market, bundleIds: keptBundles });
+    }
+  }
+
+  return result;
+}
+
 // ── Gamma API fetch ───────────────────────────────────────────────────────────
 
-// Fetch in two passes to maximise coverage:
-//   1. Top 200 by volume (most liquid / high-signal markets)
-//   2. An additional 200 by liquidity (sometimes different set)
 const GAMMA_ENDPOINTS = [
   "https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=500&order=volumeNum&ascending=false",
   "https://gamma-api.polymarket.com/markets?active=true&closed=false&limit=500&order=liquidityNum&ascending=false",
 ];
 
-// ── In-memory cache ───────────────────────────────────────────────────────────
-
-const TTL_MS = 5 * 60 * 1_000; // 5 minutes
+const TTL_MS = 5 * 60 * 1_000;
 
 let _cache: Market[] = [];
 let _fetchedAt: Date | null = null;
@@ -279,7 +324,6 @@ async function fetchFromEndpoint(url: string): Promise<GammaMarket[]> {
 
 async function fetchAndCacheMarkets(): Promise<void> {
   try {
-    // Fetch both endpoints in parallel
     const [byVolume, byLiquidity] = await Promise.allSettled(
       GAMMA_ENDPOINTS.map(fetchFromEndpoint)
     );
@@ -312,12 +356,15 @@ async function fetchAndCacheMarkets(): Promise<void> {
       );
     }
 
-    _cache = normalised;
+    // Deduplicate strike-price spam and cap bundle sizes
+    const deduped = deduplicateMarkets(normalised);
+
+    _cache = deduped;
     _fetchedAt = new Date();
     _source = "live";
 
     console.log(
-      `[polymarket_service] ✅ Live data: ${normalised.length} markets from ${rawMarkets.length} raw (Gamma API)`
+      `[polymarket_service] ✅ Live data: ${deduped.length} markets (deduplicated from ${normalised.length}) via Gamma API`
     );
   } catch (err) {
     console.warn(

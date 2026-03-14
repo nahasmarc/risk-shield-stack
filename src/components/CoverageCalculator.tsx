@@ -18,7 +18,7 @@ import {
   getTotalVolume,
   formatMillions,
 } from "@/data/bundles";
-import { CheckCircle2, AlertTriangle, Loader2, ShieldCheck, Settings } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Loader2, ShieldCheck, Settings, FlaskConical } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -80,8 +80,8 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
 
       const { data, error } = await supabase.functions.invoke("place-order", {
         body: {
-          // tokenId for primary contract — using contract id as proxy for demo
-          tokenId: primaryContract.id,
+          // Use CLOB yesTokenId when available; fall back to market id (simulation only)
+          tokenId: primaryContract.yesTokenId ?? primaryContract.id,
           side: "BUY",
           size: (cost / primaryContract.probability * 100).toFixed(2),
           price: (primaryContract.probability / 100).toFixed(4),
@@ -124,6 +124,14 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
           </h3>
           <p className="text-sm text-muted-foreground">
             Simulate and execute your hedge position
+          </p>
+        </div>
+
+        {/* Paper Trade Banner */}
+        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-50 border border-amber-200">
+          <FlaskConical className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+          <p className="text-xs font-medium text-amber-700">
+            Paper trade simulation — no real funds
           </p>
         </div>
 
@@ -182,7 +190,7 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
           </div>
         </div>
 
-        {/* Execute Button */}
+        {/* Simulate Hedge Button */}
         <Button
           className="w-full rounded-full text-sm font-semibold py-5"
           style={{
@@ -203,16 +211,19 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
                 className="flex items-center gap-2"
               >
                 <CheckCircle2 className="h-4 w-4" />
-                Hedge Placed!
+                Simulation Recorded!
               </motion.div>
             ) : (
-              <motion.span key="idle">Execute Hedge →</motion.span>
+              <motion.span key="idle" className="flex items-center gap-2">
+                <FlaskConical className="w-4 h-4" />
+                Simulate Hedge →
+              </motion.span>
             )}
           </AnimatePresence>
         </Button>
 
         <p className="text-xs text-muted-foreground text-center">
-          Powered by Polymarket CLOB · Real trades execute on-chain
+          Simulation mode · Wallet integration coming soon
         </p>
       </div>
 

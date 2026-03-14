@@ -9,6 +9,8 @@ import { CATEGORY_CONFIG, HEDGE_BUNDLES, HedgeBundle, getAvgProbability, RISK_LE
 import { ProbabilityGauge } from "@/components/ProbabilityGauge";
 import { useToast } from "@/hooks/use-toast";
 import { buildHedge, type ApiBundle } from "@/lib/api";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Message {
   id: string;
@@ -105,10 +107,19 @@ const AIBuilderPage = () => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
 
+  // Load saved bundle IDs from DB on mount
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isThinking]);
+    if (!user) return;
+    supabase
+      .from("saved_bundles")
+      .select("bundle_id")
+      .eq("user_id", user.id)
+      .then(({ data }) => {
+        if (data) setSavedBundles(data.map((r) => r.bundle_id));
+      });
+  }, [user]);
 
   const handleSubmit = async (overrideInput?: string) => {
     const text = (overrideInput ?? input).trim();
@@ -210,9 +221,21 @@ const AIBuilderPage = () => {
     inputRef.current?.focus();
   };
 
-  const handleSave = (bundle: HedgeBundle) => {
+  const handleSave = async (bundle: HedgeBundle) => {
     if (savedBundles.includes(bundle.id)) return;
     setSavedBundles((prev) => [...prev, bundle.id]);
+
+    if (user) {
+      await supabase.from("saved_bundles").upsert({
+        user_id: user.id,
+        bundle_id: bundle.id,
+        bundle_title: bundle.title,
+        bundle_category: bundle.category,
+        bundle_icon: bundle.icon,
+        contracts: bundle.contracts as unknown as any,
+      }, { onConflict: "user_id,bundle_id" });
+    }
+
     toast({
       title: "Bundle Saved",
       description: `"${bundle.title}" has been added to your portfolio.`,
@@ -413,9 +436,9 @@ const AIBuilderPage = () => {
                   </button>
                 </div>
 
-                <p className="text-xs text-muted-foreground mt-2.5 text-center">
-                  Powered by Lovable AI · Press Enter to submit
-                </p>
+        <p className="text-xs text-muted-foreground text-center">
+          Powered by Lovable AI · Press Enter to submit
+        </p>
               </div>
             </div>
           </motion.div>

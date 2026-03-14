@@ -7,6 +7,8 @@
 
 export interface Market {
   id: string;
+  slug?: string;          // Polymarket event slug for deep links
+  yesTokenId?: string;    // 256-bit CLOB token ID for YES outcome (for real orders)
   title: string;
   probability: number;   // 0–100
   liquidity: number;     // USD millions

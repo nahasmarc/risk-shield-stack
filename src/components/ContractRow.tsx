@@ -33,9 +33,13 @@ export function ContractRow({ contract, index = 0 }: ContractRowProps) {
             <span className="text-xs font-medium text-muted-foreground">
               {contract.category}
             </span>
-            {contract.id && !contract.id.includes("-") && (
+          {(contract.slug || (!contract.id.includes("-"))) && (
               <a
-                href={`https://polymarket.com/market/${contract.id}`}
+                href={
+                  contract.slug
+                    ? `https://polymarket.com/event/${contract.slug}`
+                    : `https://polymarket.com/market/${contract.id}`
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
