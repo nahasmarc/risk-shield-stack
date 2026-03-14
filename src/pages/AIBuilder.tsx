@@ -258,20 +258,31 @@ const AIBuilderPage = () => {
     setSavedBundles((prev) => [...prev, bundle.id]);
 
     if (user) {
-      await supabase.from("saved_bundles").upsert({
+      const { data } = await supabase.from("saved_bundles").upsert({
         user_id: user.id,
         bundle_id: bundle.id,
         bundle_title: bundle.title,
         bundle_category: bundle.category,
         bundle_icon: bundle.icon,
         contracts: bundle.contracts as unknown as any,
-      }, { onConflict: "user_id,bundle_id" });
+      }, { onConflict: "user_id,bundle_id" }).select().single();
+      if (data) {
+        setSavedBundleRecords((prev) => [data as SavedBundleRecord, ...prev.filter(r => r.bundle_id !== bundle.id)]);
+      }
     }
 
     toast({
       title: "Bundle Saved",
       description: `"${bundle.title}" has been added to your portfolio.`,
     });
+  };
+
+  const handleDeleteSaved = async (bundleId: string) => {
+    if (!user) return;
+    await supabase.from("saved_bundles").delete().eq("user_id", user.id).eq("bundle_id", bundleId);
+    setSavedBundles((prev) => prev.filter((id) => id !== bundleId));
+    setSavedBundleRecords((prev) => prev.filter((r) => r.bundle_id !== bundleId));
+    toast({ title: "Bundle removed from portfolio." });
   };
 
   return (
