@@ -256,22 +256,7 @@ export function AIRiskFeed() {
                   {/* Generate Hedge button */}
                   <button
                     onClick={() => handleGenerate(item.builderPrompt)}
-                    className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
-                    style={{
-                      background: "linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(348 100% 44% / 0.08))",
-                      color: "hsl(var(--primary))",
-                      border: "1px solid hsl(var(--primary) / 0.2)",
-                    }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLButtonElement).style.background =
-                        "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 44%))";
-                      (e.currentTarget as HTMLButtonElement).style.color = "white";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLButtonElement).style.background =
-                        "linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(348 100% 44% / 0.08))";
-                      (e.currentTarget as HTMLButtonElement).style.color = "hsl(var(--primary))";
-                    }}
+                    className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold text-primary border border-primary/20 bg-primary/5 hover:bg-primary hover:text-white transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
                   >
                     <Zap className="w-3 h-3" />
                     Generate Hedge

@@ -4,6 +4,7 @@ import { Navigation } from "@/components/Navigation";
 import { HedgeCard } from "@/components/HedgeCard";
 import { LiveSignalsPanel } from "@/components/LiveSignalsPanel";
 import { EventRiskMap } from "@/components/EventRiskMap";
+import { AIRiskFeed } from "@/components/AIRiskFeed";
 import { HEDGE_BUNDLES, getTotalLiquidity, formatMillions } from "@/data/bundles";
 import { Shield, ArrowRight, Search } from "lucide-react";
 import { useState } from "react";
