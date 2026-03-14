@@ -6,13 +6,13 @@ export function Navigation() {
   const isBuilder = location.pathname === "/builder";
 
   return (
-    <nav className="sticky top-0 z-50 bg-card border-b border-border shadow-[0_1px_0_hsl(var(--border))]">
+    <nav className="sticky top-0 z-50 bg-card border-b border-border/60" style={{ boxShadow: "0 1px 0 hsl(var(--border)), 0 2px 8px rgba(0,0,0,0.04)" }}>
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Wordmark */}
         <Link to="/" className="flex items-center gap-2.5 group">
           <div
             className="w-8 h-8 rounded-xl flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg, hsl(var(--primary)), hsl(221 83% 44%))" }}
+            style={{ background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 48%))" }}
           >
             <Zap className="w-4 h-4 text-white" />
           </div>
@@ -43,7 +43,7 @@ export function Navigation() {
           >
             <BrainCircuit className="w-3.5 h-3.5" />
             AI Builder
-            <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-accent text-white ml-0.5">
+            <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary ml-0.5">
               BETA
             </span>
           </Link>

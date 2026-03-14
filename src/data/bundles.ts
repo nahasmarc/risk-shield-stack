@@ -16,6 +16,7 @@ export interface HedgeBundle {
   description: string;
   category: string;
   categoryColor: string;
+  categoryPastel: string;
   icon: string;
   contracts: Contract[];
   lastUpdated: string;
@@ -24,48 +25,60 @@ export interface HedgeBundle {
 }
 
 export interface CategoryMeta {
-  color: string;         // hsl(…) string
+  color: string;         // hsl(…) deep color for icons
+  pastel: string;        // hsl(…) pastel bg
+  accentHex: string;     // hex for thin accent bar
   hslVars: string;       // raw HSL values for CSS vars
-  gradient: string;
+  gradient: string;      // very light pastel gradient for badge bg
   Icon: LucideIcon;
   label: string;
 }
 
 export const CATEGORY_CONFIG: Record<string, CategoryMeta> = {
   ENERGY: {
-    color: "hsl(24 100% 50%)",
-    hslVars: "24 100% 50%",
-    gradient: "linear-gradient(90deg, hsl(24 100% 50%), hsl(32 100% 55%))",
+    color: "hsl(24 90% 50%)",
+    pastel: "hsl(38 97% 92%)",
+    accentHex: "#FDBA74",
+    hslVars: "38 97% 72%",
+    gradient: "linear-gradient(135deg, #FFF7ED, #FFEDD5)",
     Icon: Flame,
-    label: "ENERGY",
+    label: "Energy",
   },
   TECHNOLOGY: {
-    color: "hsl(271 76% 60%)",
-    hslVars: "271 76% 60%",
-    gradient: "linear-gradient(90deg, hsl(271 76% 60%), hsl(280 80% 65%))",
+    color: "hsl(258 60% 55%)",
+    pastel: "hsl(258 89% 95%)",
+    accentHex: "#C4B5FD",
+    hslVars: "258 89% 86%",
+    gradient: "linear-gradient(135deg, #F5F3FF, #EDE9FE)",
     Icon: Cpu,
-    label: "TECHNOLOGY",
+    label: "Technology",
   },
   GEOPOLITICS: {
-    color: "hsl(0 84% 60%)",
-    hslVars: "0 84% 60%",
-    gradient: "linear-gradient(90deg, hsl(0 84% 60%), hsl(10 90% 63%))",
+    color: "hsl(0 72% 51%)",
+    pastel: "hsl(0 93% 95%)",
+    accentHex: "#FCA5A5",
+    hslVars: "0 93% 82%",
+    gradient: "linear-gradient(135deg, #FFF1F2, #FFE4E6)",
     Icon: Globe,
-    label: "GEOPOLITICS",
+    label: "Geopolitics",
   },
   POLITICS: {
-    color: "hsl(213 93% 58%)",
-    hslVars: "213 93% 58%",
-    gradient: "linear-gradient(90deg, hsl(213 93% 58%), hsl(220 90% 62%))",
+    color: "hsl(213 80% 50%)",
+    pastel: "hsl(214 95% 93%)",
+    accentHex: "#93C5FD",
+    hslVars: "214 95% 78%",
+    gradient: "linear-gradient(135deg, #EFF6FF, #DBEAFE)",
     Icon: Vote,
-    label: "POLITICS",
+    label: "Politics",
   },
   MACRO: {
-    color: "hsl(142 71% 45%)",
-    hslVars: "142 71% 45%",
-    gradient: "linear-gradient(90deg, hsl(142 71% 45%), hsl(150 72% 48%))",
+    color: "hsl(142 60% 38%)",
+    pastel: "hsl(142 77% 93%)",
+    accentHex: "#86EFAC",
+    hslVars: "142 77% 73%",
+    gradient: "linear-gradient(135deg, #F0FDF4, #DCFCE7)",
     Icon: TrendingUp,
-    label: "ECONOMICS",
+    label: "Economics",
   },
 };
 
@@ -84,7 +97,8 @@ export const HEDGE_BUNDLES: HedgeBundle[] = [
     description:
       "Guards against a sudden spike in global oil prices driven by OPEC+ supply cuts, Middle East escalation, or sanctions that threaten energy infrastructure.",
     category: "ENERGY",
-    categoryColor: "hsl(24 100% 50%)",
+    categoryColor: "hsl(24 90% 50%)",
+    categoryPastel: "hsl(38 97% 92%)",
     icon: "⛽",
     riskLevel: "HIGH",
     tags: ["energy", "commodities", "geopolitics", "inflation"],
@@ -134,7 +148,8 @@ export const HEDGE_BUNDLES: HedgeBundle[] = [
     description:
       "Protects against sudden regulatory clampdowns on AI development including model bans, liability laws, and antitrust actions targeting Big Tech AI divisions.",
     category: "TECHNOLOGY",
-    categoryColor: "hsl(271 76% 60%)",
+    categoryColor: "hsl(258 60% 55%)",
+    categoryPastel: "hsl(258 89% 95%)",
     icon: "🤖",
     riskLevel: "MEDIUM",
     tags: ["AI", "regulation", "big-tech", "EU", "legislation"],
@@ -184,7 +199,8 @@ export const HEDGE_BUNDLES: HedgeBundle[] = [
     description:
       "Provides coverage for the economic and supply chain impact of a Taiwan Strait crisis, including semiconductor disruption, US sanctions, and tech sector collapse.",
     category: "GEOPOLITICS",
-    categoryColor: "hsl(0 84% 60%)",
+    categoryColor: "hsl(0 72% 51%)",
+    categoryPastel: "hsl(0 93% 95%)",
     icon: "🌏",
     riskLevel: "CRITICAL",
     tags: ["taiwan", "china", "semiconductors", "geopolitics", "supply-chain"],
@@ -234,7 +250,8 @@ export const HEDGE_BUNDLES: HedgeBundle[] = [
     description:
       "Shields against electoral uncertainty including contested results, sharp policy reversals, and the equity market correction that historically follows high-tension election cycles.",
     category: "POLITICS",
-    categoryColor: "hsl(213 93% 58%)",
+    categoryColor: "hsl(213 80% 50%)",
+    categoryPastel: "hsl(214 95% 93%)",
     icon: "🗳️",
     riskLevel: "HIGH",
     tags: ["election", "US politics", "volatility", "policy", "markets"],
@@ -284,7 +301,8 @@ export const HEDGE_BUNDLES: HedgeBundle[] = [
     description:
       "Hedges against a resurgence of inflation driven by energy shocks, fiscal stimulus, or dollar weakness, including Fed rate hike risk and commodity price surges.",
     category: "MACRO",
-    categoryColor: "hsl(142 71% 45%)",
+    categoryColor: "hsl(142 60% 38%)",
+    categoryPastel: "hsl(142 77% 93%)",
     icon: "📈",
     riskLevel: "MEDIUM",
     tags: ["inflation", "CPI", "Fed", "commodities", "dollar", "rates"],
@@ -340,14 +358,14 @@ export interface LiveSignal {
 }
 
 export const LIVE_SIGNALS_BASE: LiveSignal[] = [
-  { id: "ls-1", contractTitle: "Brent Crude above $120", bundleCategory: "ENERGY", categoryColor: "hsl(24 100% 50%)", probability: 28, change: +2.3 },
-  { id: "ls-2", contractTitle: "EU AI Act enforcement fine", bundleCategory: "TECHNOLOGY", categoryColor: "hsl(271 76% 60%)", probability: 52, change: -1.1 },
-  { id: "ls-3", contractTitle: "China military action vs Taiwan", bundleCategory: "GEOPOLITICS", categoryColor: "hsl(0 84% 60%)", probability: 18, change: +0.8 },
-  { id: "ls-4", contractTitle: "House flips to Democrats 2026", bundleCategory: "POLITICS", categoryColor: "hsl(213 93% 58%)", probability: 44, change: +3.1 },
-  { id: "ls-5", contractTitle: "US CPI above 5% (3 months)", bundleCategory: "MACRO", categoryColor: "hsl(142 71% 45%)", probability: 19, change: -0.6 },
-  { id: "ls-6", contractTitle: "OPEC+ emergency supply cut", bundleCategory: "ENERGY", categoryColor: "hsl(24 100% 50%)", probability: 41, change: +1.7 },
-  { id: "ls-7", contractTitle: "Fed 50bps rate hike", bundleCategory: "MACRO", categoryColor: "hsl(142 71% 45%)", probability: 24, change: -2.4 },
-  { id: "ls-8", contractTitle: "US-China comprehensive sanctions", bundleCategory: "GEOPOLITICS", categoryColor: "hsl(0 84% 60%)", probability: 27, change: +0.5 },
+  { id: "ls-1", contractTitle: "Brent Crude above $120", bundleCategory: "ENERGY", categoryColor: "#FDBA74", probability: 28, change: +2.3 },
+  { id: "ls-2", contractTitle: "EU AI Act enforcement fine", bundleCategory: "TECHNOLOGY", categoryColor: "#C4B5FD", probability: 52, change: -1.1 },
+  { id: "ls-3", contractTitle: "China military action vs Taiwan", bundleCategory: "GEOPOLITICS", categoryColor: "#FCA5A5", probability: 18, change: +0.8 },
+  { id: "ls-4", contractTitle: "House flips to Democrats 2026", bundleCategory: "POLITICS", categoryColor: "#93C5FD", probability: 44, change: +3.1 },
+  { id: "ls-5", contractTitle: "US CPI above 5% (3 months)", bundleCategory: "MACRO", categoryColor: "#86EFAC", probability: 19, change: -0.6 },
+  { id: "ls-6", contractTitle: "OPEC+ emergency supply cut", bundleCategory: "ENERGY", categoryColor: "#FDBA74", probability: 41, change: +1.7 },
+  { id: "ls-7", contractTitle: "Fed 50bps rate hike", bundleCategory: "MACRO", categoryColor: "#86EFAC", probability: 24, change: -2.4 },
+  { id: "ls-8", contractTitle: "US-China comprehensive sanctions", bundleCategory: "GEOPOLITICS", categoryColor: "#FCA5A5", probability: 27, change: +0.5 },
 ];
 
 export function getBundleById(id: string): HedgeBundle | undefined {
@@ -378,8 +396,8 @@ export function formatMillions(value: number): string {
 }
 
 export const RISK_LEVEL_CONFIG = {
-  LOW: { label: "LOW RISK", color: "hsl(142 71% 45%)" },
-  MEDIUM: { label: "MED RISK", color: "hsl(43 96% 56%)" },
-  HIGH: { label: "HIGH RISK", color: "hsl(24 100% 50%)" },
-  CRITICAL: { label: "CRITICAL", color: "hsl(0 84% 60%)" },
+  LOW: { label: "Low Risk", color: "hsl(142 60% 38%)", bg: "hsl(142 77% 93%)" },
+  MEDIUM: { label: "Med Risk", color: "hsl(38 90% 45%)", bg: "hsl(38 97% 92%)" },
+  HIGH: { label: "High Risk", color: "hsl(24 90% 45%)", bg: "hsl(24 100% 93%)" },
+  CRITICAL: { label: "Critical", color: "hsl(0 72% 51%)", bg: "hsl(0 93% 95%)" },
 };
