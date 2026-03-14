@@ -295,6 +295,7 @@ const AIBuilderPage = () => {
           {[
             { id: "chat" as const, label: "AI Chat Builder", icon: MessageSquare },
             { id: "news" as const, label: "News to Hedge", icon: Newspaper, badge: "NEW" },
+            { id: "saved" as const, label: "Saved Bundles", icon: Bookmark, badge: savedBundleRecords.length > 0 ? String(savedBundleRecords.length) : undefined },
           ].map(({ id, label, icon: Icon, badge }) => (
             <button
               key={id}
