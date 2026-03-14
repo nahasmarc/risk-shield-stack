@@ -153,7 +153,7 @@ const AIBuilderPage = () => {
         ? Math.round(frontendBundle.contracts.reduce((s, c) => s + c.probability, 0) / frontendBundle.contracts.length)
         : 0;
 
-      const responseText = `I've identified a **${catConfig.label}** risk profile from your query.\n\nConstructing the **"${result.bundle.title}"** hedge bundle — ${result.bundle.contracts.length} correlated Polymarket contracts with an aggregate probability of **${avg}%**. Here's your position:`;
+      const responseText = `I've identified a **${catConfig.label}** risk profile from your query.\n\nConstructing the **"${frontendBundle.title}"** hedge bundle — ${frontendBundle.contracts.length} live Polymarket contracts with an aggregate probability of **${avg}%**. Here's your position:`;
 
       const assistantMsg: Message = {
         id: crypto.randomUUID(),
@@ -163,17 +163,15 @@ const AIBuilderPage = () => {
       };
       setMessages((prev) => [...prev, assistantMsg]);
 
-      if (frontendBundle) {
-        await new Promise((r) => setTimeout(r, 300));
-        const bundleMsg: Message = {
-          id: crypto.randomUUID(),
-          role: "bundle",
-          content: "",
-          bundle: frontendBundle,
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, bundleMsg]);
-      }
+      await new Promise((r) => setTimeout(r, 300));
+      const bundleMsg: Message = {
+        id: crypto.randomUUID(),
+        role: "bundle",
+        content: "",
+        bundle: frontendBundle,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, bundleMsg]);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Something went wrong.";
 

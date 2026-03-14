@@ -247,10 +247,10 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
                   <ShieldCheck className="w-5 h-5 text-primary" />
-                  Confirm Hedge Order
+                  Simulated Hedge Order
                 </DialogTitle>
                 <DialogDescription>
-                  This will place a real limit order on Polymarket via your connected account.
+                  This is a <strong>paper trade simulation</strong> — no real funds will be moved. Live CLOB token IDs are required for on-chain execution.
                 </DialogDescription>
               </DialogHeader>
 
@@ -273,7 +273,7 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
                     <span className="font-medium text-foreground">{(primaryContract.probability / 100).toFixed(2)} USDC</span>
                   </div>
                   <div className="flex justify-between border-t border-border pt-2.5">
-                    <span className="text-muted-foreground font-medium">Total Cost</span>
+                    <span className="text-muted-foreground font-medium">Simulated Cost</span>
                     <span className="font-bold text-primary text-base">${cost.toLocaleString()} USDC</span>
                   </div>
                 </div>
@@ -281,7 +281,7 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
                 <div className="flex items-start gap-2 p-3 rounded-xl bg-amber-50 border border-amber-100">
                   <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
                   <p className="text-xs text-amber-700 leading-relaxed">
-                    Real funds will be debited from your Polymarket account. This is not financial advice.
+                    <strong>Paper trade only.</strong> Full on-chain execution requires fetching CLOB token IDs from the Polymarket API. This simulation records the order without moving real funds.
                   </p>
                 </div>
               </div>
@@ -294,10 +294,10 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
                   {placing ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      Placing...
+                      Simulating...
                     </>
                   ) : (
-                    "Confirm & Place Order"
+                    "Confirm Simulation"
                   )}
                 </Button>
               </DialogFooter>
