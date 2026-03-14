@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, BrainCircuit, Save, Flame, Cpu, Globe, Vote, TrendingUp } from "lucide-react";
+import { Send, BrainCircuit, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/Navigation";
 import { ContractRow } from "@/components/ContractRow";
@@ -79,7 +79,6 @@ const WELCOME_MESSAGE: Message = {
   timestamp: new Date(),
 };
 
-// Render bold markdown-ish text
 function RichText({ text }: { text: string }) {
   const parts = text.split(/\*\*(.*?)\*\*/g);
   return (
@@ -163,30 +162,12 @@ const AIBuilderPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navigation />
-
-      {/* Page header */}
-      <div className="border-b border-border/40" style={{ background: "hsl(232 20% 6% / 0.8)" }}>
-        <div className="max-w-3xl mx-auto px-6 h-12 flex items-center gap-3">
-          <div className="w-6 h-6 rounded-sm bg-primary/15 border border-primary/25 flex items-center justify-center">
-            <BrainCircuit className="w-3.5 h-3.5 text-primary" />
-          </div>
-          <div>
-            <span className="text-[10px] font-mono tracking-widest uppercase text-muted-foreground">
-              AI RISK BUILDER
-            </span>
-          </div>
-          <div className="ml-auto flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse-amber" />
-            <span className="text-[9px] font-mono tracking-widest uppercase text-primary/70">ONLINE</span>
-          </div>
-        </div>
-      </div>
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-3xl mx-auto px-6 py-6 space-y-5">
+        <div className="max-w-2xl mx-auto px-6 py-8 space-y-5">
           <AnimatePresence initial={false}>
             {messages.map((msg) => (
               <motion.div
@@ -199,10 +180,10 @@ const AIBuilderPage = () => {
                 {msg.role === "user" && (
                   <div className="flex justify-end">
                     <div
-                      className="max-w-lg px-4 py-3 rounded-sm text-sm font-sans text-foreground"
+                      className="max-w-sm px-5 py-3.5 rounded-2xl rounded-br-md text-sm font-medium text-white leading-relaxed"
                       style={{
-                        background: "linear-gradient(135deg, hsl(var(--primary) / 0.15), hsl(var(--primary) / 0.08))",
-                        border: "1px solid hsl(var(--primary) / 0.25)",
+                        background: "linear-gradient(135deg, hsl(var(--primary)), hsl(221 83% 44%))",
+                        boxShadow: "0 4px 16px hsl(var(--primary) / 0.25)",
                       }}
                     >
                       {msg.content}
@@ -213,20 +194,20 @@ const AIBuilderPage = () => {
                 {/* ASSISTANT bubble */}
                 {msg.role === "assistant" && (
                   <div className="flex gap-3 items-start">
+                    {/* Avatar */}
                     <div
-                      className="w-7 h-7 rounded-sm flex items-center justify-center flex-shrink-0 mt-0.5"
+                      className="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm"
                       style={{
-                        background: "linear-gradient(135deg, hsl(var(--primary) / 0.2), hsl(271 76% 60% / 0.15))",
-                        border: "1px solid hsl(var(--primary) / 0.3)",
+                        background: "linear-gradient(135deg, hsl(var(--primary)), hsl(271 76% 60%))",
                       }}
                     >
-                      <BrainCircuit className="w-3.5 h-3.5 text-primary" />
+                      <BrainCircuit className="w-4 h-4 text-white" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-[9px] font-mono tracking-widest uppercase text-muted-foreground/50 mb-1.5">
-                        NETIRA AI
+                      <p className="text-xs font-semibold text-muted-foreground mb-1.5">
+                        Netira AI
                       </p>
-                      <div className="glass-card rounded-sm px-4 py-3">
+                      <div className="bg-card rounded-2xl rounded-bl-md px-5 py-4 shadow-card border border-border/60">
                         <p className="text-sm text-muted-foreground leading-relaxed">
                           {msg.content.split("\n").map((line, i) => (
                             <span key={i}>
@@ -262,18 +243,19 @@ const AIBuilderPage = () => {
                 className="flex gap-3 items-start"
               >
                 <div
-                  className="w-7 h-7 rounded-sm flex items-center justify-center flex-shrink-0"
+                  className="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm"
                   style={{
-                    background: "linear-gradient(135deg, hsl(var(--primary) / 0.2), hsl(271 76% 60% / 0.15))",
-                    border: "1px solid hsl(var(--primary) / 0.3)",
+                    background: "linear-gradient(135deg, hsl(var(--primary)), hsl(271 76% 60%))",
                   }}
                 >
-                  <BrainCircuit className="w-3.5 h-3.5 text-primary" />
+                  <BrainCircuit className="w-4 h-4 text-white" />
                 </div>
-                <div className="glass-card rounded-sm px-4 py-3.5 flex items-center gap-1.5 mt-[22px]">
-                  <span className="typing-dot w-1.5 h-1.5 rounded-full bg-muted-foreground" />
-                  <span className="typing-dot w-1.5 h-1.5 rounded-full bg-muted-foreground" />
-                  <span className="typing-dot w-1.5 h-1.5 rounded-full bg-muted-foreground" />
+                <div className="bg-card rounded-2xl rounded-bl-md px-5 py-4 shadow-card border border-border/60 mt-[26px]">
+                  <div className="flex items-center gap-1.5">
+                    <span className="typing-dot w-2 h-2 rounded-full bg-muted-foreground/50" />
+                    <span className="typing-dot w-2 h-2 rounded-full bg-muted-foreground/50" />
+                    <span className="typing-dot w-2 h-2 rounded-full bg-muted-foreground/50" />
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -284,16 +266,16 @@ const AIBuilderPage = () => {
       </div>
 
       {/* Input area */}
-      <div className="border-t border-border/50 backdrop-blur-xl" style={{ background: "hsl(232 20% 6% / 0.95)" }}>
-        <div className="max-w-3xl mx-auto px-6 pt-4 pb-5">
+      <div className="bg-card border-t border-border shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
+        <div className="max-w-2xl mx-auto px-6 pt-4 pb-5">
           {/* Suggestion chips */}
-          <div className="flex flex-wrap gap-2 mb-3">
+          <div className="flex flex-wrap gap-2 mb-4">
             {SUGGESTION_CHIPS.map((chip) => (
               <button
                 key={chip.label}
                 onClick={() => handleSubmit(chip.prompt)}
                 disabled={isThinking}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-[11px] font-medium border border-border/60 text-muted-foreground hover:text-foreground hover:border-border transition-all duration-200 hover:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-foreground bg-background border border-border hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
               >
                 <span>{chip.icon}</span>
                 {chip.label}
@@ -301,8 +283,10 @@ const AIBuilderPage = () => {
             ))}
           </div>
 
-          {/* Input */}
-          <div className="flex gap-2.5 items-center">
+          {/* Input bar */}
+          <div
+            className="flex items-center gap-3 bg-background rounded-2xl px-5 py-3 border border-border transition-all duration-200 focus-within:border-primary/40 focus-within:shadow-input-focus"
+          >
             <input
               ref={inputRef}
               type="text"
@@ -310,35 +294,24 @@ const AIBuilderPage = () => {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
               placeholder="Describe a risk you want to hedge..."
-              className="flex-1 px-4 py-3 rounded-sm text-sm text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 transition-all duration-200"
-              style={{
-                background: "hsl(var(--card))",
-                border: "1px solid hsl(var(--border))",
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = "hsl(var(--primary) / 0.4)";
-                e.currentTarget.style.boxShadow = "0 0 0 1px hsl(var(--primary) / 0.15)";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = "";
-                e.currentTarget.style.boxShadow = "";
-              }}
+              className="flex-1 text-sm text-foreground placeholder:text-muted-foreground bg-transparent focus:outline-none"
               disabled={isThinking}
             />
-            <Button
+            <button
               onClick={() => handleSubmit()}
               disabled={!input.trim() || isThinking}
-              className="h-11 w-11 p-0 flex-shrink-0"
+              className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
               style={{
-                background: "linear-gradient(135deg, hsl(var(--primary)), hsl(211 100% 45%))",
+                background: "linear-gradient(135deg, hsl(var(--primary)), hsl(221 83% 44%))",
+                boxShadow: "0 2px 8px hsl(var(--primary) / 0.3)",
               }}
             >
-              <Send className="w-3.5 h-3.5" />
-            </Button>
+              <Send className="w-3.5 h-3.5 text-white" />
+            </button>
           </div>
 
-          <p className="text-[9px] font-mono tracking-widest uppercase text-muted-foreground/25 mt-2.5">
-            MOCK AI · NO DATA LEAVES THIS BROWSER · PRESS ENTER TO SUBMIT
+          <p className="text-xs text-muted-foreground mt-2.5 text-center">
+            Mock AI · No data leaves this browser · Press Enter to submit
           </p>
         </div>
       </div>
@@ -365,67 +338,59 @@ function BundleCard({
       initial={{ opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="ml-10 glass-card rounded-sm overflow-hidden"
-      style={{
-        borderTopColor: bundle.categoryColor,
-        borderTopWidth: "2px",
-      }}
+      className="ml-12 bg-card rounded-2xl shadow-card border border-border/60 overflow-hidden"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border/40">
-        <div className="flex items-center gap-2.5">
-          <div
-            className="w-7 h-7 rounded-sm flex items-center justify-center flex-shrink-0"
-            style={{ background: `${bundle.categoryColor}18`, border: `1px solid ${bundle.categoryColor}30` }}
-          >
-            <CatIcon className="w-3.5 h-3.5" style={{ color: bundle.categoryColor }} />
-          </div>
-          <div>
-            <span className="text-[9px] font-mono tracking-widest uppercase block" style={{ color: bundle.categoryColor }}>
-              {catConfig.label}
-            </span>
-            <h3 className="text-sm font-semibold text-foreground leading-snug">{bundle.title}</h3>
-          </div>
+      {/* Gradient header */}
+      <div
+        className="h-16 flex items-center px-5 gap-3 relative overflow-hidden"
+        style={{ background: catConfig.gradient }}
+      >
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 80% 20%, white 0%, transparent 50%)" }} />
+        <div className="w-8 h-8 rounded-xl bg-white/25 flex items-center justify-center relative z-10">
+          <CatIcon className="w-4 h-4 text-white" />
         </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="relative z-10 flex-1 min-w-0">
+          <span className="text-xs font-semibold text-white/80 block">{catConfig.label}</span>
+          <h3 className="text-sm font-bold text-white leading-snug truncate">{bundle.title}</h3>
+        </div>
+        <div className="flex items-center gap-2 flex-shrink-0 relative z-10">
           <span
-            className="text-[9px] font-mono tracking-widest uppercase px-2 py-0.5 rounded-sm border"
-            style={{ color: riskConfig.color, borderColor: `${riskConfig.color}35`, backgroundColor: `${riskConfig.color}12` }}
+            className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/20 text-white"
           >
             {riskConfig.label}
           </span>
           <Button
-            variant="outline"
+            variant="secondary"
             size="sm"
-            className="font-mono text-[10px] tracking-widest h-7 px-2.5"
+            className="h-7 rounded-full text-xs font-semibold px-3 bg-white/20 text-white border-0 hover:bg-white/30"
             onClick={onSave}
             disabled={saved}
           >
             <Save className="w-3 h-3 mr-1" />
-            {saved ? "SAVED" : "SAVE"}
+            {saved ? "Saved" : "Save"}
           </Button>
         </div>
       </div>
 
       {/* Probability gauge */}
-      <div className="px-4 pt-3 pb-2">
+      <div className="px-5 pt-4 pb-2">
         <ProbabilityGauge value={avg} color={bundle.categoryColor} size="md" />
       </div>
 
       {/* Contracts */}
-      <div className="px-4 pb-4 space-y-1.5">
+      <div className="px-5 pb-5 space-y-2">
         {bundle.contracts.map((contract, i) => (
           <ContractRow key={contract.id} contract={contract} index={i} />
         ))}
       </div>
 
       {/* Footer */}
-      <div className="px-4 py-2.5 border-t border-border/40 flex items-center gap-4">
-        <span className="text-[10px] font-mono tracking-widest uppercase text-muted-foreground/50">
-          {bundle.contracts.length} MARKETS
+      <div className="px-5 py-3 border-t border-border/60 bg-muted/30 flex items-center gap-4">
+        <span className="text-xs text-muted-foreground">
+          {bundle.contracts.length} markets
         </span>
-        <span className="text-[10px] font-mono tracking-widest uppercase text-accent">
-          AVG PROB: {avg}%
+        <span className="text-xs font-semibold" style={{ color: bundle.categoryColor }}>
+          Avg probability: {avg}%
         </span>
       </div>
     </motion.div>

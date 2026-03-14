@@ -32,56 +32,50 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
   };
 
   return (
-    <div className="glass-card rounded-sm p-5 space-y-5">
+    <div className="bg-card rounded-2xl p-6 space-y-5 shadow-card border border-border/60">
       <div>
-        <h3 className="text-[10px] font-mono tracking-widest uppercase text-muted-foreground mb-1">
-          COVERAGE CALCULATOR
+        <h3 className="text-base font-semibold text-foreground mb-0.5">
+          Coverage Calculator
         </h3>
-        <p className="text-xs text-muted-foreground/60">
+        <p className="text-sm text-muted-foreground">
           Simulate your hedge position
         </p>
       </div>
 
       {/* Coverage Input */}
       <div className="space-y-2">
-        <label className="text-[10px] font-mono tracking-widest uppercase text-muted-foreground">
-          COVERAGE AMOUNT (USD)
+        <label className="text-sm font-medium text-foreground">
+          Coverage Amount (USD)
         </label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-mono text-sm">
+          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground font-medium text-sm">
             $
           </span>
           <Input
             type="number"
             value={coverage}
             onChange={(e) => setCoverage(e.target.value)}
-            className="pl-7 font-mono bg-background/50 border-border/60 focus:border-primary/50 text-sm"
+            className="pl-7 rounded-xl border-border bg-background focus-visible:ring-primary/30 text-sm"
             placeholder="10000"
           />
         </div>
       </div>
 
       {/* Cost Display */}
-      <div className="space-y-3 py-4 border-y border-border/50">
+      <div className="space-y-3 py-4 border-y border-border">
         <div className="flex justify-between items-center">
-          <span className="text-[10px] font-mono tracking-widest uppercase text-muted-foreground">
-            COST TO HEDGE
-          </span>
-          <span className="font-mono text-xl font-semibold text-primary">
+          <span className="text-sm text-muted-foreground">Cost to hedge</span>
+          <span className="text-2xl font-bold text-primary">
             ${cost.toLocaleString()}
           </span>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-[10px] font-mono tracking-widest uppercase text-muted-foreground">
-            AVG PROBABILITY
-          </span>
-          <span className="font-mono text-sm text-accent">{avgProb}%</span>
+          <span className="text-sm text-muted-foreground">Avg probability</span>
+          <span className="text-sm font-semibold text-accent">{avgProb}%</span>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-[10px] font-mono tracking-widest uppercase text-muted-foreground">
-            POTENTIAL RETURN
-          </span>
-          <span className="font-mono text-sm text-foreground">
+          <span className="text-sm text-muted-foreground">Potential return</span>
+          <span className="text-sm font-semibold text-foreground">
             ${coverageNum.toLocaleString()}
           </span>
         </div>
@@ -89,19 +83,15 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
 
       {/* Aggregate Stats */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-muted/30 rounded-sm p-3">
-          <p className="text-[9px] font-mono tracking-widest uppercase text-muted-foreground mb-1">
-            TOTAL LIQ
-          </p>
-          <p className="font-mono text-sm font-semibold text-foreground">
+        <div className="bg-muted/60 rounded-xl p-3">
+          <p className="text-xs text-muted-foreground mb-1">Total Liquidity</p>
+          <p className="text-sm font-semibold text-foreground">
             {formatMillions(totalLiq)}
           </p>
         </div>
-        <div className="bg-muted/30 rounded-sm p-3">
-          <p className="text-[9px] font-mono tracking-widest uppercase text-muted-foreground mb-1">
-            TOTAL VOL
-          </p>
-          <p className="font-mono text-sm font-semibold text-foreground">
+        <div className="bg-muted/60 rounded-xl p-3">
+          <p className="text-xs text-muted-foreground mb-1">Total Volume</p>
+          <p className="text-sm font-semibold text-foreground">
             {formatMillions(totalVol)}
           </p>
         </div>
@@ -109,7 +99,11 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
 
       {/* Execute Button */}
       <Button
-        className="w-full font-mono tracking-wider text-sm"
+        className="w-full rounded-xl text-sm font-semibold py-5"
+        style={{
+          background: "linear-gradient(135deg, hsl(var(--primary)), hsl(221 83% 44%))",
+          boxShadow: "0 4px 16px hsl(var(--primary) / 0.25)",
+        }}
         onClick={handleExecute}
         disabled={executed || coverageNum <= 0}
       >
@@ -120,15 +114,15 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
             className="flex items-center gap-2"
           >
             <CheckCircle2 className="h-4 w-4" />
-            HEDGE EXECUTED
+            Hedge Executed!
           </motion.div>
         ) : (
-          "EXECUTE HEDGE →"
+          "Execute Hedge →"
         )}
       </Button>
 
-      <p className="text-[10px] text-muted-foreground/40 text-center font-mono">
-        SIMULATED · NOT FINANCIAL ADVICE
+      <p className="text-xs text-muted-foreground text-center">
+        Simulated · Not financial advice
       </p>
     </div>
   );

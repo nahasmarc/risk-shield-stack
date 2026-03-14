@@ -41,7 +41,6 @@ export function LiveSignalsPanel() {
       );
       setLastUpdate(new Date());
 
-      // Clear updating flag after animation
       setTimeout(() => {
         setSignals((prev) => prev.map((s) => ({ ...s, isUpdating: false })));
       }, 800);
@@ -56,37 +55,35 @@ export function LiveSignalsPanel() {
     d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 
   return (
-    <div className="signals-panel-bg rounded-sm flex flex-col overflow-hidden">
+    <div className="bg-card rounded-2xl border border-border shadow-card flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-border/50 flex items-center justify-between gap-2 flex-shrink-0">
-        <div className="flex items-center gap-2">
-          <div className="relative">
+      <div className="px-5 py-4 border-b border-border flex items-center justify-between gap-2 flex-shrink-0">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
             <Radio className="w-3.5 h-3.5 text-primary" />
           </div>
-          <span className="text-[10px] font-mono tracking-widest uppercase text-foreground font-semibold">
+          <span className="text-sm font-semibold text-foreground">
             Live Event Signals
           </span>
         </div>
-        <span className="flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse-amber" />
-          <span className="text-[8px] font-mono tracking-widest uppercase text-green-500">LIVE</span>
+        <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-50 border border-green-100">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+          <span className="text-[10px] font-semibold text-green-700 uppercase tracking-wide">LIVE</span>
         </span>
       </div>
 
       {/* Signal rows */}
-      <div className="flex-1 overflow-y-auto divide-y divide-border/30">
+      <div className="flex-1 overflow-y-auto divide-y divide-border/50">
         {signals.map((signal) => (
           <SignalRow key={signal.id} signal={signal} />
         ))}
       </div>
 
       {/* Footer */}
-      <div className="px-4 py-2.5 border-t border-border/50 flex-shrink-0">
+      <div className="px-5 py-3 border-t border-border bg-muted/30 flex-shrink-0">
         <div className="flex items-center justify-between">
-          <span className="text-[8px] font-mono tracking-widest uppercase text-muted-foreground/50">
-            UPDATING LIVE
-          </span>
-          <span className="text-[8px] font-mono tabular-nums text-muted-foreground/40">
+          <span className="text-xs text-muted-foreground">Updating live</span>
+          <span className="text-xs tabular-nums text-muted-foreground">
             {formatTime(lastUpdate)}
           </span>
         </div>
@@ -102,29 +99,29 @@ function SignalRow({ signal }: { signal: SignalState }) {
     <motion.div
       animate={
         signal.isUpdating
-          ? { backgroundColor: `${signal.categoryColor}10` }
+          ? { backgroundColor: `${signal.categoryColor}08` }
           : { backgroundColor: "transparent" }
       }
       transition={{ duration: 0.4 }}
-      className="px-4 py-3 flex flex-col gap-1.5"
+      className="px-5 py-3.5 flex flex-col gap-2"
     >
       {/* Category dot + title */}
       <div className="flex items-start gap-2">
         <span
-          className="w-1.5 h-1.5 rounded-full mt-1 flex-shrink-0"
+          className="w-2 h-2 rounded-full mt-1 flex-shrink-0"
           style={{ backgroundColor: signal.categoryColor }}
         />
-        <span className="text-[11px] text-foreground/80 leading-tight flex-1 line-clamp-2">
+        <span className="text-xs font-medium text-foreground leading-tight flex-1 line-clamp-2">
           {signal.contractTitle}
         </span>
       </div>
 
       {/* Prob bar + delta */}
-      <div className="flex items-center gap-2 pl-3.5">
+      <div className="flex items-center gap-2 pl-4">
         {/* Mini sparkline bar */}
-        <div className="flex-1 h-0.5 rounded-full overflow-hidden bg-border/50">
+        <div className="flex-1 h-1 rounded-full overflow-hidden bg-muted">
           <motion.div
-            className="h-0.5 rounded-full"
+            className="h-1 rounded-full"
             style={{ backgroundColor: signal.categoryColor }}
             animate={{ width: `${signal.currentProb}%` }}
             transition={{ duration: 0.6, ease: "easeOut" }}
@@ -132,7 +129,7 @@ function SignalRow({ signal }: { signal: SignalState }) {
         </div>
         {/* Probability */}
         <span
-          className="text-[10px] font-mono tabular-nums w-8 text-right"
+          className="text-xs font-bold tabular-nums w-8 text-right"
           style={{ color: signal.categoryColor }}
         >
           {signal.currentProb}%
@@ -145,16 +142,16 @@ function SignalRow({ signal }: { signal: SignalState }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 4 }}
             transition={{ duration: 0.3 }}
-            className="flex items-center gap-0.5 w-12 justify-end"
+            className="flex items-center gap-0.5 w-14 justify-end"
           >
             {isUp ? (
-              <TrendingUp className="w-2.5 h-2.5 text-green-500 flex-shrink-0" />
+              <TrendingUp className="w-3 h-3 text-green-500 flex-shrink-0" />
             ) : (
-              <TrendingDown className="w-2.5 h-2.5 text-destructive flex-shrink-0" />
+              <TrendingDown className="w-3 h-3 text-destructive flex-shrink-0" />
             )}
             <span
-              className="text-[10px] font-mono tabular-nums"
-              style={{ color: isUp ? "hsl(142 71% 45%)" : "hsl(0 72% 51%)" }}
+              className="text-xs font-semibold tabular-nums"
+              style={{ color: isUp ? "hsl(142 71% 40%)" : "hsl(0 72% 51%)" }}
             >
               {isUp ? "+" : ""}
               {signal.currentChange.toFixed(1)}%
@@ -164,10 +161,10 @@ function SignalRow({ signal }: { signal: SignalState }) {
       </div>
 
       {/* Category label */}
-      <div className="pl-3.5">
+      <div className="pl-4">
         <span
-          className="text-[8px] font-mono tracking-widest uppercase"
-          style={{ color: `${signal.categoryColor}99` }}
+          className="text-[10px] font-semibold uppercase tracking-wide"
+          style={{ color: `${signal.categoryColor}aa` }}
         >
           {signal.bundleCategory}
         </span>
