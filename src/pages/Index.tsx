@@ -94,27 +94,6 @@ const HomePage = () => {
         </motion.div>
 
         {/* Stats bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 max-w-3xl mx-auto"
-        >
-          {[
-            { label: "Avg Coverage", value: `${avgCoverage}%` },
-            { label: "Markets Tracked", value: `${HEDGE_BUNDLES.reduce((a, b) => a + b.contracts.length, 0)}` },
-          ].map((stat, i) => (
-            <div
-              key={i}
-              className="bg-card rounded-2xl px-5 py-4 text-center shadow-card border border-border/60"
-            >
-              <span className="text-2xl font-bold text-foreground tabular-nums block leading-none mb-1">
-                {stat.value}
-              </span>
-              <span className="text-xs text-muted-foreground">{stat.label}</span>
-            </div>
-          ))}
-        </motion.div>
       </div>
 
       {/* Event Risk Network */}
