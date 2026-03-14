@@ -24,99 +24,77 @@ export function HedgeCard({ bundle, index = 0 }: HedgeCardProps) {
         duration: 0.5,
         ease: [0.16, 1, 0.3, 1],
       }}
-      whileHover={{ y: -4 }}
-      className="group h-full glow-card"
+      whileHover={{ y: -6 }}
+      className="group h-full"
     >
-      <Link to={`/bundle/${bundle.id}`} className="block h-full focus:outline-none">
+      <Link to={`/bundle/${bundle.id}`} className="block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl">
         <div
-          className="h-full glass-card rounded-sm flex flex-col gap-4 overflow-hidden transition-all duration-300 cursor-pointer hover:border-opacity-60"
-          style={
-            {
-              "--hover-glow": `${bundle.categoryColor}28`,
-            } as React.CSSProperties
-          }
+          className="h-full bg-card rounded-2xl overflow-hidden flex flex-col transition-all duration-300 cursor-pointer"
+          style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06)" }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 32px ${bundle.categoryColor}28, 0 0 0 1px ${bundle.categoryColor}22`;
+            (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 24px rgba(0,0,0,0.08), 0 24px 56px ${bundle.categoryColor}18`;
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.boxShadow = "";
+            (e.currentTarget as HTMLElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06)";
           }}
         >
-          {/* Category color top strip */}
+          {/* Gradient header */}
           <div
-            className="h-0.5 w-full flex-shrink-0"
+            className="h-[88px] flex items-end px-6 pb-4 flex-shrink-0 relative overflow-hidden"
             style={{ background: catConfig.gradient }}
-          />
-
-          <div className="px-5 pb-5 flex flex-col gap-4 flex-1">
-            {/* Header */}
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-center gap-2.5">
-                {/* Category icon badge */}
-                <div
-                  className="w-8 h-8 rounded-sm flex items-center justify-center flex-shrink-0"
-                  style={{
-                    background: `${bundle.categoryColor}18`,
-                    border: `1px solid ${bundle.categoryColor}30`,
-                  }}
-                >
-                  <CatIcon
-                    className="w-4 h-4"
-                    style={{ color: bundle.categoryColor }}
-                  />
-                </div>
-                <div>
-                  <span
-                    className="text-[9px] font-mono tracking-widest uppercase font-semibold"
-                    style={{ color: bundle.categoryColor }}
-                  >
-                    {catConfig.label}
-                  </span>
-                </div>
-              </div>
-              {/* Risk pill */}
-              <span
-                className="text-[9px] font-mono tracking-widest uppercase px-2 py-0.5 rounded-sm border flex-shrink-0"
-                style={{
-                  color: riskConfig.color,
-                  borderColor: `${riskConfig.color}35`,
-                  backgroundColor: `${riskConfig.color}12`,
-                }}
-              >
-                {riskConfig.label}
-              </span>
+          >
+            {/* Subtle pattern overlay */}
+            <div
+              className="absolute inset-0 opacity-10"
+              style={{
+                backgroundImage: `radial-gradient(circle at 80% 20%, white 0%, transparent 50%)`,
+              }}
+            />
+            {/* Icon badge */}
+            <div className="w-10 h-10 rounded-xl bg-white/25 backdrop-blur-sm flex items-center justify-center relative z-10">
+              <CatIcon className="w-5 h-5 text-white" />
             </div>
+            {/* Risk pill */}
+            <span
+              className="ml-auto text-[10px] font-semibold px-2.5 py-1 rounded-full bg-white/20 text-white backdrop-blur-sm relative z-10"
+            >
+              {riskConfig.label}
+            </span>
+          </div>
+
+          {/* Card body */}
+          <div className="px-6 py-5 flex flex-col gap-4 flex-1">
+            {/* Category label */}
+            <span className="text-xs font-semibold" style={{ color: bundle.categoryColor }}>
+              {catConfig.label}
+            </span>
 
             {/* Title & Description */}
             <div className="flex-1">
-              <h3 className="text-[15px] font-semibold text-foreground mb-2 leading-snug group-hover:text-primary transition-colors duration-200">
+              <h3 className="text-base font-semibold text-foreground mb-1.5 leading-snug group-hover:text-primary transition-colors duration-200">
                 {bundle.title}
               </h3>
-              <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+              <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
                 {bundle.description}
               </p>
             </div>
 
             {/* Probability Gauge */}
-            <div>
-              <ProbabilityGauge
-                value={avgProb}
-                size="md"
-                color={bundle.categoryColor}
-              />
-            </div>
+            <ProbabilityGauge
+              value={avgProb}
+              size="md"
+              color={bundle.categoryColor}
+            />
 
             {/* Footer */}
-            <div className="flex items-center justify-between pt-1 border-t border-border/40">
-              <div className="flex items-center gap-1.5 text-muted-foreground/60">
-                <TrendingUp className="w-3 h-3" />
-                <span className="text-[10px] font-mono tracking-widest uppercase">
-                  {bundle.contracts.length} MARKETS
-                </span>
+            <div className="flex items-center justify-between pt-2 border-t border-border/60">
+              <div className="flex items-center gap-1.5 text-muted-foreground">
+                <TrendingUp className="w-3.5 h-3.5" />
+                <span className="text-xs font-medium">{bundle.contracts.length} markets</span>
               </div>
-              <div className="flex items-center gap-1 text-[10px] font-mono tracking-wider text-muted-foreground group-hover:text-primary transition-colors duration-200">
-                VIEW BUNDLE{" "}
-                <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform duration-200" />
+              <div className="flex items-center gap-1 text-sm font-semibold text-primary group-hover:gap-1.5 transition-all duration-200">
+                View Bundle
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-200" />
               </div>
             </div>
           </div>
