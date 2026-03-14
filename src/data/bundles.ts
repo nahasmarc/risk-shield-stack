@@ -148,8 +148,8 @@ export const HEDGE_BUNDLES: HedgeBundle[] = [
     description:
       "Protects against sudden regulatory clampdowns on AI development including model bans, liability laws, and antitrust actions targeting Big Tech AI divisions.",
     category: "TECHNOLOGY",
-    categoryColor: "hsl(258 60% 55%)",
-    categoryPastel: "hsl(258 89% 95%)",
+    categoryColor: "hsl(239 84% 50%)",
+    categoryPastel: "hsl(239 84% 95%)",
     icon: "🤖",
     riskLevel: "MEDIUM",
     tags: ["AI", "regulation", "big-tech", "EU", "legislation"],
