@@ -127,6 +127,14 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
           </p>
         </div>
 
+        {/* Paper Trade Banner */}
+        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-50 border border-amber-200">
+          <FlaskConical className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+          <p className="text-xs font-medium text-amber-700">
+            Paper trade simulation — no real funds
+          </p>
+        </div>
+
         {/* Coverage Input */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground">
@@ -182,7 +190,7 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
           </div>
         </div>
 
-        {/* Execute Button */}
+        {/* Simulate Hedge Button */}
         <Button
           className="w-full rounded-full text-sm font-semibold py-5"
           style={{
@@ -203,16 +211,19 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
                 className="flex items-center gap-2"
               >
                 <CheckCircle2 className="h-4 w-4" />
-                Hedge Placed!
+                Simulation Recorded!
               </motion.div>
             ) : (
-              <motion.span key="idle">Execute Hedge →</motion.span>
+              <motion.span key="idle" className="flex items-center gap-2">
+                <FlaskConical className="w-4 h-4" />
+                Simulate Hedge →
+              </motion.span>
             )}
           </AnimatePresence>
         </Button>
 
         <p className="text-xs text-muted-foreground text-center">
-          Powered by Polymarket CLOB · Real trades execute on-chain
+          Simulation mode · Wallet integration coming soon
         </p>
       </div>
 
