@@ -436,9 +436,9 @@ const AIBuilderPage = () => {
                   </button>
                 </div>
 
-                <p className="text-xs text-muted-foreground mt-2.5 text-center">
-                  Powered by Lovable AI · Press Enter to submit
-                </p>
+        <p className="text-xs text-muted-foreground text-center">
+          Powered by Lovable AI · Press Enter to submit
+        </p>
               </div>
             </div>
           </motion.div>
