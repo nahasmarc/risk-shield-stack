@@ -216,9 +216,11 @@ const AIBuilderPage = () => {
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
             className="flex-1 flex flex-col overflow-hidden"
           >
-        <div className="max-w-2xl mx-auto px-6 py-8 space-y-5">
-          <AnimatePresence initial={false}>
-            {messages.map((msg) => (
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto">
+              <div className="max-w-2xl mx-auto px-6 py-8 space-y-5">
+                <AnimatePresence initial={false}>
+                  {messages.map((msg) => (
               <motion.div
                 key={msg.id}
                 initial={{ opacity: 0, y: 14 }}
