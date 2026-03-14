@@ -395,6 +395,33 @@ export function formatMillions(value: number): string {
   return `$${value.toFixed(1)}M`;
 }
 
+export interface EffectivenessScore {
+  score: number;
+  correlation: number;
+  liquidity: number;
+  scenario: number;
+}
+
+export function calculateEffectivenessScore(bundle: HedgeBundle): EffectivenessScore {
+  // 1. Correlation Coverage: unique risk categories / 4 benchmark
+  const uniqueCategories = new Set(bundle.contracts.map((c) => c.category)).size;
+  const correlation = Math.min(Math.round((uniqueCategories / 4) * 100), 100);
+
+  // 2. Market Liquidity: avg liquidity normalised against $10M benchmark
+  const avgLiquidity =
+    bundle.contracts.reduce((acc, c) => acc + c.liquidity, 0) / bundle.contracts.length;
+  const liquidity = Math.min(Math.round((avgLiquidity / 10) * 100), 100);
+
+  // 3. Scenario Coverage: avg probability weighted — higher = broader coverage
+  const avgProbability =
+    bundle.contracts.reduce((acc, c) => acc + c.probability, 0) / bundle.contracts.length;
+  const scenario = Math.min(Math.round(avgProbability * 1.8), 100);
+
+  const score = Math.round(correlation * 0.35 + liquidity * 0.30 + scenario * 0.35);
+
+  return { score, correlation, liquidity, scenario };
+}
+
 export const RISK_LEVEL_CONFIG = {
   LOW: { label: "Low Risk", color: "hsl(142 60% 38%)", bg: "hsl(142 77% 93%)" },
   MEDIUM: { label: "Med Risk", color: "hsl(38 90% 45%)", bg: "hsl(38 97% 92%)" },

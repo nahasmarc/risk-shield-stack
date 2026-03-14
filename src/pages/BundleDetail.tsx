@@ -4,6 +4,7 @@ import { ArrowLeft, Info } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { ContractRow } from "@/components/ContractRow";
 import { CoverageCalculator } from "@/components/CoverageCalculator";
+import { HedgeEffectivenessScore } from "@/components/HedgeEffectivenessScore";
 import {
   getBundleById,
   getAvgProbability,
@@ -187,6 +188,9 @@ const BundleDetailPage = () => {
 
           {/* Right Column — 1/3 */}
           <div className="space-y-4">
+            {/* Hedge Effectiveness Score */}
+            <HedgeEffectivenessScore bundle={bundle} />
+
             <motion.div
               initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
