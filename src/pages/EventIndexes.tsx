@@ -1,9 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { TrendingUp, TrendingDown, ChevronDown, ChevronUp, Droplets, BarChart2, ExternalLink } from "lucide-react";
+import { TrendingUp, TrendingDown, ChevronDown, ChevronUp, Droplets, BarChart2, ExternalLink, Wifi, WifiOff } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
-import { EVENT_INDEXES, type EventIndex, type IndexHistoryPoint } from "@/data/eventIndexes";
+import { EVENT_INDEXES, type EventIndex, type IndexHistoryPoint, type IndexMarket } from "@/data/eventIndexes";
 import { useNavigate } from "react-router-dom";
+import { usePolymarkets, type Market } from "@/hooks/usePolymarkets";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 
 /* ─── Sparkline SVG ─── */
 function Sparkline({
