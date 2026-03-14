@@ -83,11 +83,8 @@ const HomePage = () => {
               />
               <button
                 onClick={handleHeroSubmit}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
-                style={{
-                  background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 44%))",
-                  boxShadow: "0 4px 16px hsl(var(--primary) / 0.3)",
-                }}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-primary-foreground bg-primary transition-all duration-200 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
+                style={{ boxShadow: "0 4px 16px hsl(var(--primary) / 0.3)" }}
               >
                 Build a Hedge
                 <ArrowRight className="w-3.5 h-3.5" />
