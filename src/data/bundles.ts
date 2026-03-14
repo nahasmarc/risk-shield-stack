@@ -1,3 +1,5 @@
+import { Flame, Cpu, Globe, Vote, TrendingUp, type LucideIcon } from "lucide-react";
+
 export interface Contract {
   id: string;
   title: string;
@@ -20,6 +22,52 @@ export interface HedgeBundle {
   riskLevel: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
   tags: string[];
 }
+
+export interface CategoryMeta {
+  color: string;         // hsl(…) string
+  hslVars: string;       // raw HSL values for CSS vars
+  gradient: string;
+  Icon: LucideIcon;
+  label: string;
+}
+
+export const CATEGORY_CONFIG: Record<string, CategoryMeta> = {
+  ENERGY: {
+    color: "hsl(24 100% 50%)",
+    hslVars: "24 100% 50%",
+    gradient: "linear-gradient(90deg, hsl(24 100% 50%), hsl(32 100% 55%))",
+    Icon: Flame,
+    label: "ENERGY",
+  },
+  TECHNOLOGY: {
+    color: "hsl(271 76% 60%)",
+    hslVars: "271 76% 60%",
+    gradient: "linear-gradient(90deg, hsl(271 76% 60%), hsl(280 80% 65%))",
+    Icon: Cpu,
+    label: "TECHNOLOGY",
+  },
+  GEOPOLITICS: {
+    color: "hsl(0 84% 60%)",
+    hslVars: "0 84% 60%",
+    gradient: "linear-gradient(90deg, hsl(0 84% 60%), hsl(10 90% 63%))",
+    Icon: Globe,
+    label: "GEOPOLITICS",
+  },
+  POLITICS: {
+    color: "hsl(213 93% 58%)",
+    hslVars: "213 93% 58%",
+    gradient: "linear-gradient(90deg, hsl(213 93% 58%), hsl(220 90% 62%))",
+    Icon: Vote,
+    label: "POLITICS",
+  },
+  MACRO: {
+    color: "hsl(142 71% 45%)",
+    hslVars: "142 71% 45%",
+    gradient: "linear-gradient(90deg, hsl(142 71% 45%), hsl(150 72% 48%))",
+    Icon: TrendingUp,
+    label: "ECONOMICS",
+  },
+};
 
 // Polymarket API placeholder
 // TODO: Replace mock data with live API call
@@ -186,7 +234,7 @@ export const HEDGE_BUNDLES: HedgeBundle[] = [
     description:
       "Shields against electoral uncertainty including contested results, sharp policy reversals, and the equity market correction that historically follows high-tension election cycles.",
     category: "POLITICS",
-    categoryColor: "hsl(142 71% 45%)",
+    categoryColor: "hsl(213 93% 58%)",
     icon: "🗳️",
     riskLevel: "HIGH",
     tags: ["election", "US politics", "volatility", "policy", "markets"],
@@ -236,7 +284,7 @@ export const HEDGE_BUNDLES: HedgeBundle[] = [
     description:
       "Hedges against a resurgence of inflation driven by energy shocks, fiscal stimulus, or dollar weakness, including Fed rate hike risk and commodity price surges.",
     category: "MACRO",
-    categoryColor: "hsl(43 96% 56%)",
+    categoryColor: "hsl(142 71% 45%)",
     icon: "📈",
     riskLevel: "MEDIUM",
     tags: ["inflation", "CPI", "Fed", "commodities", "dollar", "rates"],
@@ -282,6 +330,26 @@ export const HEDGE_BUNDLES: HedgeBundle[] = [
   },
 ];
 
+export interface LiveSignal {
+  id: string;
+  contractTitle: string;
+  bundleCategory: string;
+  categoryColor: string;
+  probability: number;
+  change: number;
+}
+
+export const LIVE_SIGNALS_BASE: LiveSignal[] = [
+  { id: "ls-1", contractTitle: "Brent Crude above $120", bundleCategory: "ENERGY", categoryColor: "hsl(24 100% 50%)", probability: 28, change: +2.3 },
+  { id: "ls-2", contractTitle: "EU AI Act enforcement fine", bundleCategory: "TECHNOLOGY", categoryColor: "hsl(271 76% 60%)", probability: 52, change: -1.1 },
+  { id: "ls-3", contractTitle: "China military action vs Taiwan", bundleCategory: "GEOPOLITICS", categoryColor: "hsl(0 84% 60%)", probability: 18, change: +0.8 },
+  { id: "ls-4", contractTitle: "House flips to Democrats 2026", bundleCategory: "POLITICS", categoryColor: "hsl(213 93% 58%)", probability: 44, change: +3.1 },
+  { id: "ls-5", contractTitle: "US CPI above 5% (3 months)", bundleCategory: "MACRO", categoryColor: "hsl(142 71% 45%)", probability: 19, change: -0.6 },
+  { id: "ls-6", contractTitle: "OPEC+ emergency supply cut", bundleCategory: "ENERGY", categoryColor: "hsl(24 100% 50%)", probability: 41, change: +1.7 },
+  { id: "ls-7", contractTitle: "Fed 50bps rate hike", bundleCategory: "MACRO", categoryColor: "hsl(142 71% 45%)", probability: 24, change: -2.4 },
+  { id: "ls-8", contractTitle: "US-China comprehensive sanctions", bundleCategory: "GEOPOLITICS", categoryColor: "hsl(0 84% 60%)", probability: 27, change: +0.5 },
+];
+
 export function getBundleById(id: string): HedgeBundle | undefined {
   return HEDGE_BUNDLES.find((b) => b.id === id);
 }
@@ -311,7 +379,7 @@ export function formatMillions(value: number): string {
 
 export const RISK_LEVEL_CONFIG = {
   LOW: { label: "LOW RISK", color: "hsl(142 71% 45%)" },
-  MEDIUM: { label: "MEDIUM RISK", color: "hsl(43 96% 56%)" },
+  MEDIUM: { label: "MED RISK", color: "hsl(43 96% 56%)" },
   HIGH: { label: "HIGH RISK", color: "hsl(24 100% 50%)" },
-  CRITICAL: { label: "CRITICAL RISK", color: "hsl(0 84% 60%)" },
+  CRITICAL: { label: "CRITICAL", color: "hsl(0 84% 60%)" },
 };
