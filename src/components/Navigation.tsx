@@ -12,12 +12,18 @@ export function Navigation() {
   const [marketCount, setMarketCount] = useState<number>(0);
 
   useEffect(() => {
+    let cancelled = false;
     getDataSourceHealth()
       .then((h) => {
-        setDataSource(h.dataSource);
-        setMarketCount(h.marketCount);
+        if (!cancelled) {
+          setDataSource(h.dataSource);
+          setMarketCount(h.marketCount);
+        }
       })
-      .catch(() => setDataSource("mock"));
+      .catch(() => {
+        if (!cancelled) setDataSource("mock");
+      });
+    return () => { cancelled = true; };
   }, []);
 
   const navLink = (to: string, label: string, icon?: React.ReactNode, badge?: string) => {
