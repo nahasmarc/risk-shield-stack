@@ -265,22 +265,71 @@ const containerVariants = {
   show: { transition: { staggerChildren: 0.1 } },
 };
 
+// ── Bundle → Index mapping ──
+const INDEX_BUNDLE_MAP: Record<string, string[]> = {
+  "geopolitical-risk": ["taiwan-conflict"],
+  "ai-regulation": ["ai-regulation"],
+  "inflation-risk": ["oil-shock", "inflation-spike"],
+  "election-volatility": ["us-election-volatility"],
+};
+
+function buildLiveIndexes(markets: Market[]): EventIndex[] {
+  return EVENT_INDEXES.map((staticIndex) => {
+    const bundleIds = INDEX_BUNDLE_MAP[staticIndex.id] ?? [];
+    const liveMarkets = markets.filter((m) =>
+      m.bundleIds.some((bid) => bundleIds.includes(bid))
+    );
+
+    if (liveMarkets.length === 0) return staticIndex;
+
+    const weight = 1 / liveMarkets.length;
+    const indexMarkets: IndexMarket[] = liveMarkets.map((m) => ({
+      id: m.id,
+      title: m.title,
+      probability: m.probability,
+      weight,
+      direction: m.direction,
+      liquidity: m.liquidity,
+      volume: m.volume,
+    }));
+
+    const currentValue = Math.round(
+      indexMarkets.reduce((sum, m) => sum + m.probability * m.weight, 0)
+    );
+
+    // Re-anchor sparkline history to live composite value
+    const history = staticIndex.history.map((pt, i, arr) =>
+      i === arr.length - 1 ? { ...pt, value: currentValue } : pt
+    );
+
+    return {
+      ...staticIndex,
+      markets: indexMarkets,
+      currentValue,
+      history,
+    };
+  });
+}
+
 const EventIndexesPage = () => {
   const navigate = useNavigate();
+  const { markets, loading, dataSource } = usePolymarkets();
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
 
-  const categories = ["ALL", ...Array.from(new Set(EVENT_INDEXES.map((i) => i.category)))];
+  const indexes = useMemo(() => buildLiveIndexes(markets), [markets]);
+
+  const categories = ["ALL", ...Array.from(new Set(indexes.map((i) => i.category)))];
   const filtered =
-    activeCategory === "ALL" ? EVENT_INDEXES : EVENT_INDEXES.filter((i) => i.category === activeCategory);
+    activeCategory === "ALL" ? indexes : indexes.filter((i) => i.category === activeCategory);
 
   const handleHedge = (index: EventIndex) => {
     navigate(`/builder?q=${encodeURIComponent(index.description)}`);
   };
 
   // Aggregate stats
-  const avgValue = Math.round(EVENT_INDEXES.reduce((a, b) => a + b.currentValue, 0) / EVENT_INDEXES.length);
-  const rising = EVENT_INDEXES.filter((i) => i.change7d > 0).length;
-  const totalMarkets = EVENT_INDEXES.reduce((a, b) => a + b.markets.length, 0);
+  const avgValue = Math.round(indexes.reduce((a, b) => a + b.currentValue, 0) / indexes.length);
+  const rising = indexes.filter((i) => i.change7d > 0).length;
+  const totalMarkets = indexes.reduce((a, b) => a + b.markets.length, 0);
 
   return (
     <div className="min-h-screen bg-background">
