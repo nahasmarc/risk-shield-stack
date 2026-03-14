@@ -101,7 +101,6 @@ const HomePage = () => {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 max-w-3xl mx-auto"
         >
           {[
-            { label: "Bundles Active", value: `${HEDGE_BUNDLES.length}` },
             { label: "Total Liquidity", value: formatMillions(totalLiquidity) },
             { label: "Avg Coverage", value: `${avgCoverage}%` },
             { label: "Markets Tracked", value: `${HEDGE_BUNDLES.reduce((a, b) => a + b.contracts.length, 0)}` },
