@@ -33,13 +33,12 @@ export function Navigation() {
         {/* Wordmark */}
         <Link to="/" className="flex items-center gap-2.5 group">
           <div
-            className="w-8 h-8 rounded-xl flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 48%))" }}
+            className="w-8 h-8 rounded-xl flex items-center justify-center bg-primary"
           >
-            <Zap className="w-4 h-4 text-white" />
+            <Zap className="w-4 h-4 text-primary-foreground" />
           </div>
           <span className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors duration-200">
-            Netira
+            PolyBumble
           </span>
         </Link>
 
