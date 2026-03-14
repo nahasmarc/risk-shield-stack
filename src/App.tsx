@@ -7,6 +7,7 @@ import Index from "./pages/Index.tsx";
 import BundleDetail from "./pages/BundleDetail.tsx";
 import AIBuilder from "./pages/AIBuilder.tsx";
 import EventIndexes from "./pages/EventIndexes.tsx";
+import Login from "./pages/Login.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
