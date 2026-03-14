@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, BrainCircuit, Save, Newspaper, MessageSquare } from "lucide-react";
+import { Send, BrainCircuit, Save, Newspaper, MessageSquare, Bookmark, Trash2, Loader2 } from "lucide-react";
 import { NewsToHedge } from "@/components/NewsToHedge";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/Navigation";
@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { buildHedge, type ApiBundle } from "@/lib/api";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useSearchParams } from "react-router-dom";
 
 interface Message {
   id: string;
