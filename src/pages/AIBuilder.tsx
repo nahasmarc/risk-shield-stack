@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, BrainCircuit, Save, Newspaper, MessageSquare } from "lucide-react";
+import { Send, BrainCircuit, Save, Newspaper, MessageSquare, Bookmark, Trash2, Loader2 } from "lucide-react";
 import { NewsToHedge } from "@/components/NewsToHedge";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/Navigation";
@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { buildHedge, type ApiBundle } from "@/lib/api";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useSearchParams } from "react-router-dom";
 
 interface Message {
   id: string;
@@ -98,28 +99,59 @@ function RichText({ text }: { text: string }) {
   );
 }
 
+interface SavedBundleRecord {
+  id: string;
+  bundle_id: string;
+  bundle_title: string;
+  bundle_category: string;
+  bundle_icon: string;
+  contracts: unknown;
+  created_at: string;
+}
+
 const AIBuilderPage = () => {
-  const [activeTab, setActiveTab] = useState<"chat" | "news">("chat");
+  const [activeTab, setActiveTab] = useState<"chat" | "news" | "saved">("chat");
   const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [isThinking, setIsThinking] = useState(false);
   const [savedBundles, setSavedBundles] = useState<string[]>([]);
+  const [savedBundleRecords, setSavedBundleRecords] = useState<SavedBundleRecord[]>([]);
+  const [loadingSaved, setLoadingSaved] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const autoSubmittedRef = useRef(false);
 
-  // Load saved bundle IDs from DB on mount
+  // Load saved bundles from DB on mount
   useEffect(() => {
     if (!user) return;
+    setLoadingSaved(true);
     supabase
       .from("saved_bundles")
-      .select("bundle_id")
+      .select("*")
       .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
       .then(({ data }) => {
-        if (data) setSavedBundles(data.map((r) => r.bundle_id));
+        if (data) {
+          setSavedBundles(data.map((r) => r.bundle_id));
+          setSavedBundleRecords(data as SavedBundleRecord[]);
+        }
+        setLoadingSaved(false);
       });
   }, [user]);
+
+  // Auto-submit ?q= search param from hero bar
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q && !autoSubmittedRef.current) {
+      autoSubmittedRef.current = true;
+      // Small delay to let the component finish mounting
+      setTimeout(() => handleSubmit(q), 400);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const handleSubmit = async (overrideInput?: string) => {
     const text = (overrideInput ?? input).trim();
@@ -226,20 +258,31 @@ const AIBuilderPage = () => {
     setSavedBundles((prev) => [...prev, bundle.id]);
 
     if (user) {
-      await supabase.from("saved_bundles").upsert({
+      const { data } = await supabase.from("saved_bundles").upsert({
         user_id: user.id,
         bundle_id: bundle.id,
         bundle_title: bundle.title,
         bundle_category: bundle.category,
         bundle_icon: bundle.icon,
         contracts: bundle.contracts as unknown as any,
-      }, { onConflict: "user_id,bundle_id" });
+      }, { onConflict: "user_id,bundle_id" }).select().single();
+      if (data) {
+        setSavedBundleRecords((prev) => [data as SavedBundleRecord, ...prev.filter(r => r.bundle_id !== bundle.id)]);
+      }
     }
 
     toast({
       title: "Bundle Saved",
       description: `"${bundle.title}" has been added to your portfolio.`,
     });
+  };
+
+  const handleDeleteSaved = async (bundleId: string) => {
+    if (!user) return;
+    await supabase.from("saved_bundles").delete().eq("user_id", user.id).eq("bundle_id", bundleId);
+    setSavedBundles((prev) => prev.filter((id) => id !== bundleId));
+    setSavedBundleRecords((prev) => prev.filter((r) => r.bundle_id !== bundleId));
+    toast({ title: "Bundle removed from portfolio." });
   };
 
   return (
@@ -252,6 +295,7 @@ const AIBuilderPage = () => {
           {[
             { id: "chat" as const, label: "AI Chat Builder", icon: MessageSquare },
             { id: "news" as const, label: "News to Hedge", icon: Newspaper, badge: "NEW" },
+            { id: "saved" as const, label: "Saved Bundles", icon: Bookmark, badge: savedBundleRecords.length > 0 ? String(savedBundleRecords.length) : undefined },
           ].map(({ id, label, icon: Icon, badge }) => (
             <button
               key={id}
@@ -285,6 +329,72 @@ const AIBuilderPage = () => {
             className="flex-1 overflow-y-auto"
           >
             <NewsToHedge />
+          </motion.div>
+        ) : activeTab === "saved" ? (
+          <motion.div
+            key="saved"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="flex-1 overflow-y-auto"
+          >
+            <div className="max-w-2xl mx-auto px-6 py-8">
+              <h2 className="text-lg font-bold text-foreground mb-1">Saved Bundles</h2>
+              <p className="text-sm text-muted-foreground mb-6">
+                {user ? "Your saved hedge bundles, persisted across sessions." : "Sign in to save and view your bundles."}
+              </p>
+
+              {loadingSaved ? (
+                <div className="flex items-center justify-center py-16">
+                  <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                </div>
+              ) : savedBundleRecords.length === 0 ? (
+                <div className="text-center py-16">
+                  <Bookmark className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+                  <p className="text-sm text-muted-foreground">No saved bundles yet.</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Build a hedge in the AI Chat tab and click "Save".
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {savedBundleRecords.map((rec) => {
+                    const catConfig = CATEGORY_CONFIG[rec.bundle_category] ?? CATEGORY_CONFIG["MACRO"];
+                    const contracts = Array.isArray(rec.contracts) ? rec.contracts : [];
+                    return (
+                      <div
+                        key={rec.id}
+                        className="bg-card rounded-2xl border border-border/60 overflow-hidden"
+                        style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
+                      >
+                        <div className="h-1 w-full" style={{ backgroundColor: catConfig.accentHex }} />
+                        <div className="flex items-center gap-3 px-4 py-3">
+                          <div
+                            className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-base"
+                            style={{ backgroundColor: catConfig.pastel }}
+                          >
+                            {rec.bundle_icon}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-bold text-foreground truncate">{rec.bundle_title}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                              {contracts.length} contracts · {new Date(rec.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => handleDeleteSaved(rec.bundle_id)}
+                            className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </motion.div>
         ) : (
           <motion.div

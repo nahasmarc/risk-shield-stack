@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { usePolymarkets, type Market } from "@/hooks/usePolymarkets";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { formatMillions } from "@/lib/utils";
 
 /* ─── Sparkline SVG ─── */
 function Sparkline({
@@ -103,11 +104,11 @@ function MarketRow({ market, indexColor }: { market: EventIndex["markets"][numbe
         <div className="flex items-center gap-3 mt-1">
           <span className="text-[11px] text-muted-foreground flex items-center gap-1">
             <Droplets className="w-3 h-3" />
-            ${market.liquidity.toFixed(1)}M liq
+            {formatMillions(market.liquidity)} liq
           </span>
           <span className="text-[11px] text-muted-foreground flex items-center gap-1">
             <BarChart2 className="w-3 h-3" />
-            ${market.volume.toFixed(1)}M vol
+            {formatMillions(market.volume)} vol
           </span>
         </div>
       </div>

@@ -9,6 +9,8 @@ import { getAllMarkets } from "./market_fetcher.ts";
 
 export interface BundleContract {
   id: string;
+  slug?: string;
+  yesTokenId?: string;
   title: string;
   probability: number;
   liquidity: number;
@@ -101,6 +103,8 @@ async function hydrateBundleContracts(bundle: HedgeBundle): Promise<HedgeBundle>
     ...bundle,
     contracts: markets.map((m) => ({
       id: m.id,
+      slug: m.slug,
+      yesTokenId: m.yesTokenId,
       title: m.title,
       probability: m.probability,
       liquidity: m.liquidity,
