@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { BrainCircuit, Zap, BarChart3, Database, LogOut } from "lucide-react";
+import { BrainCircuit, Zap, BarChart3, Database, LogOut, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getDataSourceHealth } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
