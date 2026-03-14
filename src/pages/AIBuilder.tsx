@@ -107,10 +107,19 @@ const AIBuilderPage = () => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
 
+  // Load saved bundle IDs from DB on mount
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isThinking]);
+    if (!user) return;
+    supabase
+      .from("saved_bundles")
+      .select("bundle_id")
+      .eq("user_id", user.id)
+      .then(({ data }) => {
+        if (data) setSavedBundles(data.map((r) => r.bundle_id));
+      });
+  }, [user]);
 
   const handleSubmit = async (overrideInput?: string) => {
     const text = (overrideInput ?? input).trim();
