@@ -95,8 +95,8 @@ const CATEGORY_TO_BUNDLE: Record<string, string> = {
   MACRO:       "inflation-spike",
 };
 
-function hydrateBundleContracts(bundle: HedgeBundle): HedgeBundle {
-  const markets = getAllMarkets({ bundleId: bundle.id });
+async function hydrateBundleContracts(bundle: HedgeBundle): Promise<HedgeBundle> {
+  const markets = await getAllMarkets({ bundleId: bundle.id });
   return {
     ...bundle,
     contracts: markets.map((m) => ({
@@ -111,11 +111,11 @@ function hydrateBundleContracts(bundle: HedgeBundle): HedgeBundle {
   };
 }
 
-export function matchBundle(risk: ParsedRisk, sectors?: string[]): BundleMatch[] {
+export async function matchBundle(risk: ParsedRisk, sectors?: string[]): Promise<BundleMatch[]> {
   const results: BundleMatch[] = [];
 
   for (const rawBundle of BUNDLES) {
-    const bundle = hydrateBundleContracts(rawBundle);
+    const bundle = await hydrateBundleContracts(rawBundle);
     let score = 0;
     const reasons: string[] = [];
 
@@ -167,7 +167,7 @@ export function matchBundle(risk: ParsedRisk, sectors?: string[]): BundleMatch[]
   return results;
 }
 
-export function getBestBundle(risk: ParsedRisk, sectors?: string[]): BundleMatch | null {
-  const matches = matchBundle(risk, sectors);
+export async function getBestBundle(risk: ParsedRisk, sectors?: string[]): Promise<BundleMatch | null> {
+  const matches = await matchBundle(risk, sectors);
   return matches[0] ?? null;
 }

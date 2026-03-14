@@ -42,7 +42,7 @@ serve(async (req) => {
       );
     }
 
-    const match = getBestBundle(detectedRisk);
+    const match = await getBestBundle(detectedRisk);
 
     if (!match) {
       return new Response(

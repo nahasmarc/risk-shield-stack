@@ -1,9 +1,8 @@
 /**
  * market_fetcher.ts
  * Central source of truth for prediction market data.
- * Designed for future swap to Polymarket Gamma API.
- * TODO: Replace MOCK_MARKETS with live fetch:
- *   const res = await fetch(`https://gamma-api.polymarket.com/markets?search=${query}`);
+ * Delegates live data to polymarket_service (Polymarket Gamma API)
+ * with automatic fallback to MOCK_MARKETS.
  */
 
 export interface Market {
@@ -25,8 +24,10 @@ export interface MarketsFilter {
   tags?: string[];
 }
 
-const MOCK_MARKETS: Market[] = [
-  // ── ENERGY / OIL ─────────────────────────────────────────────────────────
+// ── Static mock catalogue (fallback) ─────────────────────────────────────────
+
+export const MOCK_MARKETS: Market[] = [
+  // ── ENERGY / OIL ───────────────────────────────────────────────────────────
   {
     id: "oil-1",
     title: "Brent Crude above $120/barrel before Dec 2025",
@@ -59,7 +60,7 @@ const MOCK_MARKETS: Market[] = [
     tags: ["xle", "energy", "etf"],
     bundleIds: ["oil-shock"],
   },
-  // ── AI REGULATION ────────────────────────────────────────────────────────
+  // ── AI REGULATION ──────────────────────────────────────────────────────────
   {
     id: "ai-1",
     title: "EU AI Act enforcement triggers major fine by 2026",
@@ -92,7 +93,7 @@ const MOCK_MARKETS: Market[] = [
     tags: ["microsoft", "ai", "antitrust", "doj"],
     bundleIds: ["ai-regulation"],
   },
-  // ── TAIWAN / GEOPOLITICS ─────────────────────────────────────────────────
+  // ── TAIWAN / GEOPOLITICS ───────────────────────────────────────────────────
   {
     id: "taiwan-1",
     title: "China military action against Taiwan before 2027",
@@ -125,7 +126,7 @@ const MOCK_MARKETS: Market[] = [
     tags: ["nvidia", "semiconductors", "revenue"],
     bundleIds: ["taiwan-conflict"],
   },
-  // ── US ELECTION ──────────────────────────────────────────────────────────
+  // ── US ELECTION ────────────────────────────────────────────────────────────
   {
     id: "election-1",
     title: "2026 US midterms flip the House to Democrats",
@@ -158,7 +159,7 @@ const MOCK_MARKETS: Market[] = [
     tags: ["sp500", "correction", "election"],
     bundleIds: ["us-election-volatility"],
   },
-  // ── INFLATION ────────────────────────────────────────────────────────────
+  // ── INFLATION ──────────────────────────────────────────────────────────────
   {
     id: "inflation-1",
     title: "US CPI above 5% for 3 consecutive months in 2025",
@@ -193,32 +194,22 @@ const MOCK_MARKETS: Market[] = [
   },
 ];
 
-export function getAllMarkets(filter?: MarketsFilter): Market[] {
-  let markets = [...MOCK_MARKETS];
+// ── Public async API — delegates to polymarket_service ────────────────────────
 
-  if (filter?.category) {
-    markets = markets.filter((m) => m.category === filter.category.toUpperCase());
-  }
-  if (filter?.minLiquidity !== undefined) {
-    markets = markets.filter((m) => m.liquidity >= filter.minLiquidity!);
-  }
-  if (filter?.bundleId) {
-    markets = markets.filter((m) => m.bundleIds.includes(filter.bundleId!));
-  }
-  if (filter?.tags && filter.tags.length > 0) {
-    const searchTags = filter.tags.map((t) => t.toLowerCase());
-    markets = markets.filter((m) =>
-      m.tags.some((tag) => searchTags.some((st) => tag.toLowerCase().includes(st)))
-    );
-  }
+import {
+  getPolymarkets,
+  getPolymarketsByBundle,
+  getPolymarketById,
+} from "./polymarket_service.ts";
 
-  return markets;
+export async function getAllMarkets(filter?: MarketsFilter): Promise<Market[]> {
+  return getPolymarkets(filter);
 }
 
-export function getMarketsByBundle(bundleId: string): Market[] {
-  return MOCK_MARKETS.filter((m) => m.bundleIds.includes(bundleId));
+export async function getMarketsByBundle(bundleId: string): Promise<Market[]> {
+  return getPolymarketsByBundle(bundleId);
 }
 
-export function getMarketById(id: string): Market | undefined {
-  return MOCK_MARKETS.find((m) => m.id === id);
+export async function getMarketById(id: string): Promise<Market | undefined> {
+  return getPolymarketById(id);
 }

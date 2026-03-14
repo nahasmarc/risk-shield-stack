@@ -44,7 +44,7 @@ serve(async (req) => {
       );
     }
 
-    const match = getBestBundle(detectedRisk);
+    const match = await getBestBundle(detectedRisk);
 
     if (!match) {
       return new Response(
@@ -53,7 +53,7 @@ serve(async (req) => {
       );
     }
 
-    const relevantMarkets = getMarketsByBundle(match.bundle.id);
+    const relevantMarkets = await getMarketsByBundle(match.bundle.id);
 
     return new Response(
       JSON.stringify({
