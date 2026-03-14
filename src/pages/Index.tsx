@@ -174,14 +174,15 @@ const HomePage = () => {
             </motion.div>
           </div>
 
-          {/* Live Signals Panel — sticky sidebar */}
+          {/* Right sidebar: Live Signals + AI Risk Feed */}
           <motion.div
             initial={{ opacity: 0, x: 16 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="hidden xl:block w-72 flex-shrink-0 sticky top-[5rem]"
+            className="hidden xl:flex xl:flex-col w-72 flex-shrink-0 sticky top-[5rem] gap-5 max-h-[calc(100vh-6rem)] overflow-y-auto pb-4"
           >
             <LiveSignalsPanel />
+            <AIRiskFeed />
           </motion.div>
         </div>
       </div>
