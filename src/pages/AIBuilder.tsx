@@ -318,62 +318,62 @@ const AIBuilderPage = () => {
             )}
           </AnimatePresence>
 
-          <div ref={bottomRef} />
-        </div>
-      </div>
+                <div ref={bottomRef} />
+              </div>
+            </div>
 
-      {/* Input area */}
-      <div className="bg-card border-t border-border/60" style={{ boxShadow: "0 -4px 16px rgba(0,0,0,0.04)" }}>
-        <div className="max-w-2xl mx-auto px-6 pt-4 pb-5">
-          {/* Suggestion chips */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {SUGGESTION_CHIPS.map((chip) => (
-              <button
-                key={chip.label}
-                onClick={() => handleSubmit(chip.prompt)}
-                disabled={isThinking}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-foreground bg-background border border-border hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
-                style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
-              >
-                <span>{chip.icon}</span>
-                {chip.label}
-              </button>
-            ))}
-          </div>
+            {/* Input area */}
+            <div className="bg-card border-t border-border/60" style={{ boxShadow: "0 -4px 16px rgba(0,0,0,0.04)" }}>
+              <div className="max-w-2xl mx-auto px-6 pt-4 pb-5">
+                {/* Suggestion chips */}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {SUGGESTION_CHIPS.map((chip) => (
+                    <button
+                      key={chip.label}
+                      onClick={() => handleSubmit(chip.prompt)}
+                      disabled={isThinking}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-foreground bg-background border border-border hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                      style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
+                    >
+                      <span>{chip.icon}</span>
+                      {chip.label}
+                    </button>
+                  ))}
+                </div>
 
-          {/* Input bar */}
-          <div
-            className="flex items-center gap-3 bg-background rounded-2xl px-5 py-3 border border-border transition-all duration-200 focus-within:border-primary/40"
-            style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.05)" }}
-          >
-            <input
-              ref={inputRef}
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-              placeholder="Describe a risk you want to hedge..."
-              className="flex-1 text-sm text-foreground placeholder:text-muted-foreground bg-transparent focus:outline-none"
-              disabled={isThinking}
-            />
-            <button
-              onClick={() => handleSubmit()}
-              disabled={!input.trim() || isThinking}
-              className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
-              style={{
-                background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 48%))",
-                boxShadow: "0 2px 8px hsl(var(--primary) / 0.3)",
-              }}
-            >
-              <Send className="w-3.5 h-3.5 text-white" />
-            </button>
-          </div>
+                {/* Input bar */}
+                <div
+                  className="flex items-center gap-3 bg-background rounded-2xl px-5 py-3 border border-border transition-all duration-200 focus-within:border-primary/40"
+                  style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.05)" }}
+                >
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                    placeholder="Describe a risk you want to hedge..."
+                    className="flex-1 text-sm text-foreground placeholder:text-muted-foreground bg-transparent focus:outline-none"
+                    disabled={isThinking}
+                  />
+                  <button
+                    onClick={() => handleSubmit()}
+                    disabled={!input.trim() || isThinking}
+                    className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
+                    style={{
+                      background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 48%))",
+                      boxShadow: "0 2px 8px hsl(var(--primary) / 0.3)",
+                    }}
+                  >
+                    <Send className="w-3.5 h-3.5 text-white" />
+                  </button>
+                </div>
 
-          <p className="text-xs text-muted-foreground mt-2.5 text-center">
-            Mock AI · No data leaves this browser · Press Enter to submit
-          </p>
-        </div>
-      </div>
+                <p className="text-xs text-muted-foreground mt-2.5 text-center">
+                  Mock AI · No data leaves this browser · Press Enter to submit
+                </p>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
