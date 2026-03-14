@@ -392,7 +392,8 @@ export function calculateHedgeCost(bundle: HedgeBundle, coverage: number): numbe
 
 export function formatMillions(value: number): string {
   if (value >= 1000) return `$${(value / 1000).toFixed(1)}B`;
-  return `$${value.toFixed(1)}M`;
+  if (value >= 1) return `$${value.toFixed(1)}M`;
+  return `$${Math.round(value * 1000)}K`;
 }
 
 export interface EffectivenessScore {

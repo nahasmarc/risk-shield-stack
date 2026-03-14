@@ -98,7 +98,7 @@ export function Navigation() {
               {isLoading
                 ? "Connecting..."
                 : isLive
-                ? `Polymarket Live · ${marketCount}m`
+                ? `Polymarket Live · ${marketCount} markets`
                 : "Mock Data"}
             </span>
           </div>
