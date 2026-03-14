@@ -18,7 +18,7 @@ import {
   getTotalVolume,
   formatMillions,
 } from "@/data/bundles";
-import { CheckCircle2, AlertTriangle, Loader2, ShieldCheck, Settings } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Loader2, ShieldCheck, Settings, FlaskConical } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
