@@ -74,7 +74,7 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
         </div>
         <div className="flex justify-between items-center">
           <span className="text-sm text-muted-foreground">Avg probability</span>
-          <span className="text-sm font-semibold" style={{ color: "hsl(38 90% 45%)" }}>{avgProb}%</span>
+          <span className="text-sm font-semibold text-primary">{avgProb}%</span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-sm text-muted-foreground">Potential return</span>

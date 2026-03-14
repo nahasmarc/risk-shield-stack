@@ -56,9 +56,9 @@ const HomePage = () => {
             Hedge Real-World Risks with{" "}
             <span
               className="bg-clip-text text-transparent"
-              style={{
-                backgroundImage: "linear-gradient(135deg, hsl(var(--primary)), hsl(271 76% 60%))",
-              }}
+            style={{
+              backgroundImage: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 40%))",
+            }}
             >
               AI-Built Event Portfolios
             </span>
@@ -88,7 +88,7 @@ const HomePage = () => {
                 onClick={handleHeroSubmit}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex-shrink-0"
                 style={{
-                  background: "linear-gradient(135deg, hsl(var(--primary)), hsl(221 83% 44%))",
+                  background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 44%))",
                   boxShadow: "0 4px 16px hsl(var(--primary) / 0.3)",
                 }}
               >

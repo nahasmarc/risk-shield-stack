@@ -8,9 +8,9 @@ interface ContractRowProps {
 
 export function ContractRow({ contract, index = 0 }: ContractRowProps) {
   const getBarColor = (p: number) => {
-    if (p >= 60) return "hsl(0 72% 51%)";
-    if (p >= 35) return "hsl(213 80% 50%)";
-    return "hsl(142 60% 40%)";
+    if (p >= 60) return "hsl(0 84% 60%)";   // pastel red — high
+    if (p >= 35) return "hsl(214 95% 52%)";  // pastel blue — mid
+    return "hsl(142 52% 45%)";               // pastel green — low
   };
 
   return (
