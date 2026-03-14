@@ -92,6 +92,39 @@ export type Database = {
         }
         Relationships: []
       }
+      saved_bundles: {
+        Row: {
+          bundle_category: string
+          bundle_icon: string
+          bundle_id: string
+          bundle_title: string
+          contracts: Json
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          bundle_category?: string
+          bundle_icon?: string
+          bundle_id: string
+          bundle_title: string
+          contracts?: Json
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          bundle_category?: string
+          bundle_icon?: string
+          bundle_id?: string
+          bundle_title?: string
+          contracts?: Json
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
