@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { HedgeCard } from "@/components/HedgeCard";
 import { LiveSignalsPanel } from "@/components/LiveSignalsPanel";
+import { EventRiskMap } from "@/components/EventRiskMap";
 import { HEDGE_BUNDLES, getTotalLiquidity, formatMillions } from "@/data/bundles";
 import { Shield, ArrowRight, Search } from "lucide-react";
 import { useState } from "react";
@@ -124,6 +125,27 @@ const HomePage = () => {
           ))}
         </motion.div>
       </div>
+
+      {/* Event Risk Network */}
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        className="max-w-7xl mx-auto px-6 pb-10"
+      >
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="text-lg font-semibold text-foreground">Event Risk Network</h2>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              How global events cascade into downstream risks
+            </p>
+          </div>
+          <span className="text-sm text-muted-foreground hidden sm:block">
+            Click a node to see hedge bundles
+          </span>
+        </div>
+        <EventRiskMap />
+      </motion.section>
 
       {/* Main content + signals sidebar */}
       <div className="max-w-7xl mx-auto px-6 pb-20">
