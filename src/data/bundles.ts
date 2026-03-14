@@ -301,8 +301,8 @@ export const HEDGE_BUNDLES: HedgeBundle[] = [
     description:
       "Hedges against a resurgence of inflation driven by energy shocks, fiscal stimulus, or dollar weakness, including Fed rate hike risk and commodity price surges.",
     category: "MACRO",
-    categoryColor: "hsl(142 60% 38%)",
-    categoryPastel: "hsl(142 77% 93%)",
+    categoryColor: "hsl(158 64% 38%)",
+    categoryPastel: "hsl(158 64% 93%)",
     icon: "📈",
     riskLevel: "MEDIUM",
     tags: ["inflation", "CPI", "Fed", "commodities", "dollar", "rates"],
