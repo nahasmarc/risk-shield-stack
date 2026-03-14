@@ -43,7 +43,7 @@ serve(async (req) => {
     const inputText = [...assets, ...sectors].join(", ");
     const detectedRisk = await parseRisk(inputText);
 
-    const bundleMatches = matchBundle(detectedRisk, sectors);
+    const bundleMatches = await matchBundle(detectedRisk, sectors);
 
     // Run scenario simulation for each matched bundle (top 3)
     const suggestedHedges = bundleMatches.slice(0, 3).map((bm) => {
