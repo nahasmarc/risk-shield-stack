@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      orders: {
+        Row: {
+          bundle_id: string
+          bundle_title: string
+          contract_id: string
+          contract_title: string
+          created_at: string
+          id: string
+          polymarket_order_id: string | null
+          price: number
+          side: string
+          size: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bundle_id: string
+          bundle_title: string
+          contract_id: string
+          contract_title: string
+          created_at?: string
+          id?: string
+          polymarket_order_id?: string | null
+          price: number
+          side: string
+          size: number
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bundle_id?: string
+          bundle_title?: string
+          contract_id?: string
+          contract_title?: string
+          created_at?: string
+          id?: string
+          polymarket_order_id?: string | null
+          price?: number
+          side?: string
+          size?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       polymarket_credentials: {
         Row: {
           api_key: string
