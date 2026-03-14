@@ -300,7 +300,7 @@ const AIBuilderPage = () => {
                     </div>
                     <div className="flex-1">
                       <p className="text-xs font-semibold text-muted-foreground mb-1.5">
-                        Netira AI
+                        PolyBumble AI
                       </p>
                       <div
                         className="bg-card rounded-2xl rounded-bl-md px-5 py-4"
