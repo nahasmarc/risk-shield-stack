@@ -188,6 +188,9 @@ const BundleDetailPage = () => {
 
           {/* Right Column — 1/3 */}
           <div className="space-y-4">
+            {/* Hedge Effectiveness Score */}
+            <HedgeEffectivenessScore bundle={bundle} />
+
             <motion.div
               initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
