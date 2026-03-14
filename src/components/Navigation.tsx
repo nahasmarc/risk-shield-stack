@@ -1,7 +1,10 @@
-import { Link, useLocation } from "react-router-dom";
-import { BrainCircuit, Zap, BarChart3, Database } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { BrainCircuit, Zap, BarChart3, Database, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getDataSourceHealth } from "@/lib/api";
+import { useAuth } from "@/hooks/useAuth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
 type DataSource = "live" | "mock" | "loading";
 
