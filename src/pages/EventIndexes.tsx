@@ -414,19 +414,27 @@ const EventIndexesPage = () => {
 
       {/* Index grid */}
       <div className="max-w-7xl mx-auto px-6 pb-20">
-        <motion.div
-          key={activeCategory}
-          variants={containerVariants}
-          initial="hidden"
-          animate="show"
-          className="grid grid-cols-1 lg:grid-cols-2 gap-6"
-        >
-          <AnimatePresence>
-            {filtered.map((index) => (
-              <IndexCard key={index.id} index={index} onViewDetail={() => handleHedge(index)} />
+        {loading ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <Skeleton key={i} className="h-[420px] rounded-2xl" />
             ))}
-          </AnimatePresence>
-        </motion.div>
+          </div>
+        ) : (
+          <motion.div
+            key={activeCategory}
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+          >
+            <AnimatePresence>
+              {filtered.map((index) => (
+                <IndexCard key={index.id} index={index} onViewDetail={() => handleHedge(index)} />
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
       </div>
 
       {/* Footer */}
