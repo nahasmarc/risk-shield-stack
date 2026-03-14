@@ -160,8 +160,8 @@ function normaliseMarket(raw: GammaMarket): Market | null {
   if (bundleIds.length === 0) return null;
 
   const probability = parseProbability(raw);
-  // Filter out markets with degenerate prices (very near 0 or 100)
-  if (probability < 2 || probability > 98) return null;
+  // Filter out already-resolved markets (price pinned at 0 or 100)
+  if (probability <= 1 || probability >= 99) return null;
 
   return {
     id: raw.id,
