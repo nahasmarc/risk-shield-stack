@@ -182,7 +182,7 @@ const AIBuilderPage = () => {
                     <div
                       className="max-w-sm px-5 py-3.5 rounded-2xl rounded-br-md text-sm font-medium text-white leading-relaxed"
                       style={{
-                        background: "linear-gradient(135deg, hsl(var(--primary)), hsl(221 83% 44%))",
+                        background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 48%))",
                         boxShadow: "0 4px 16px hsl(var(--primary) / 0.25)",
                       }}
                     >
@@ -198,7 +198,7 @@ const AIBuilderPage = () => {
                     <div
                       className="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm"
                       style={{
-                        background: "linear-gradient(135deg, hsl(var(--primary)), hsl(271 76% 60%))",
+                        background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 80% 70%))",
                       }}
                     >
                       <BrainCircuit className="w-4 h-4 text-white" />
@@ -207,7 +207,10 @@ const AIBuilderPage = () => {
                       <p className="text-xs font-semibold text-muted-foreground mb-1.5">
                         Netira AI
                       </p>
-                      <div className="bg-card rounded-2xl rounded-bl-md px-5 py-4 shadow-card border border-border/60">
+                      <div
+                        className="bg-card rounded-2xl rounded-bl-md px-5 py-4"
+                        style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06)" }}
+                      >
                         <p className="text-sm text-muted-foreground leading-relaxed">
                           {msg.content.split("\n").map((line, i) => (
                             <span key={i}>
@@ -245,12 +248,15 @@ const AIBuilderPage = () => {
                 <div
                   className="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm"
                   style={{
-                    background: "linear-gradient(135deg, hsl(var(--primary)), hsl(271 76% 60%))",
+                    background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 80% 70%))",
                   }}
                 >
                   <BrainCircuit className="w-4 h-4 text-white" />
                 </div>
-                <div className="bg-card rounded-2xl rounded-bl-md px-5 py-4 shadow-card border border-border/60 mt-[26px]">
+                <div
+                  className="bg-card rounded-2xl rounded-bl-md px-5 py-4 mt-[26px]"
+                  style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06)" }}
+                >
                   <div className="flex items-center gap-1.5">
                     <span className="typing-dot w-2 h-2 rounded-full bg-muted-foreground/50" />
                     <span className="typing-dot w-2 h-2 rounded-full bg-muted-foreground/50" />
@@ -266,7 +272,7 @@ const AIBuilderPage = () => {
       </div>
 
       {/* Input area */}
-      <div className="bg-card border-t border-border shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
+      <div className="bg-card border-t border-border/60" style={{ boxShadow: "0 -4px 16px rgba(0,0,0,0.04)" }}>
         <div className="max-w-2xl mx-auto px-6 pt-4 pb-5">
           {/* Suggestion chips */}
           <div className="flex flex-wrap gap-2 mb-4">
@@ -275,7 +281,8 @@ const AIBuilderPage = () => {
                 key={chip.label}
                 onClick={() => handleSubmit(chip.prompt)}
                 disabled={isThinking}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-foreground bg-background border border-border hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-foreground bg-background border border-border hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
               >
                 <span>{chip.icon}</span>
                 {chip.label}
@@ -285,7 +292,8 @@ const AIBuilderPage = () => {
 
           {/* Input bar */}
           <div
-            className="flex items-center gap-3 bg-background rounded-2xl px-5 py-3 border border-border transition-all duration-200 focus-within:border-primary/40 focus-within:shadow-input-focus"
+            className="flex items-center gap-3 bg-background rounded-2xl px-5 py-3 border border-border transition-all duration-200 focus-within:border-primary/40"
+            style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.05)" }}
           >
             <input
               ref={inputRef}
@@ -300,9 +308,9 @@ const AIBuilderPage = () => {
             <button
               onClick={() => handleSubmit()}
               disabled={!input.trim() || isThinking}
-              className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
+              className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
               style={{
-                background: "linear-gradient(135deg, hsl(var(--primary)), hsl(221 83% 44%))",
+                background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 48%))",
                 boxShadow: "0 2px 8px hsl(var(--primary) / 0.3)",
               }}
             >
@@ -338,31 +346,35 @@ function BundleCard({
       initial={{ opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="ml-12 bg-card rounded-2xl shadow-card border border-border/60 overflow-hidden"
+      className="ml-12 bg-card rounded-2xl overflow-hidden"
+      style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06)" }}
     >
-      {/* Gradient header */}
-      <div
-        className="h-16 flex items-center px-5 gap-3 relative overflow-hidden"
-        style={{ background: catConfig.gradient }}
-      >
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 80% 20%, white 0%, transparent 50%)" }} />
-        <div className="w-8 h-8 rounded-xl bg-white/25 flex items-center justify-center relative z-10">
-          <CatIcon className="w-4 h-4 text-white" />
+      {/* Thin top accent bar */}
+      <div className="h-1 w-full" style={{ backgroundColor: catConfig.accentHex }} />
+
+      {/* Header row */}
+      <div className="flex items-center px-5 py-4 gap-3 border-b border-border/60">
+        <div
+          className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+          style={{ backgroundColor: catConfig.pastel }}
+        >
+          <CatIcon className="w-4 h-4" style={{ color: catConfig.color }} />
         </div>
-        <div className="relative z-10 flex-1 min-w-0">
-          <span className="text-xs font-semibold text-white/80 block">{catConfig.label}</span>
-          <h3 className="text-sm font-bold text-white leading-snug truncate">{bundle.title}</h3>
+        <div className="flex-1 min-w-0">
+          <span className="text-xs font-semibold block" style={{ color: catConfig.color }}>{catConfig.label}</span>
+          <h3 className="text-sm font-bold text-foreground leading-snug truncate">{bundle.title}</h3>
         </div>
-        <div className="flex items-center gap-2 flex-shrink-0 relative z-10">
+        <div className="flex items-center gap-2 flex-shrink-0">
           <span
-            className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/20 text-white"
+            className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+            style={{ color: riskConfig.color, backgroundColor: riskConfig.bg }}
           >
             {riskConfig.label}
           </span>
           <Button
-            variant="secondary"
+            variant="outline"
             size="sm"
-            className="h-7 rounded-full text-xs font-semibold px-3 bg-white/20 text-white border-0 hover:bg-white/30"
+            className="h-7 rounded-full text-xs font-semibold px-3 border-primary/20 text-primary hover:bg-primary/5"
             onClick={onSave}
             disabled={saved}
           >
@@ -374,7 +386,7 @@ function BundleCard({
 
       {/* Probability gauge */}
       <div className="px-5 pt-4 pb-2">
-        <ProbabilityGauge value={avg} color={bundle.categoryColor} size="md" />
+        <ProbabilityGauge value={avg} color={catConfig.accentHex} size="md" />
       </div>
 
       {/* Contracts */}
@@ -389,7 +401,7 @@ function BundleCard({
         <span className="text-xs text-muted-foreground">
           {bundle.contracts.length} markets
         </span>
-        <span className="text-xs font-semibold" style={{ color: bundle.categoryColor }}>
+        <span className="text-xs font-semibold" style={{ color: catConfig.color }}>
           Avg probability: {avg}%
         </span>
       </div>

@@ -8,9 +8,9 @@ interface ContractRowProps {
 
 export function ContractRow({ contract, index = 0 }: ContractRowProps) {
   const getBarColor = (p: number) => {
-    if (p >= 60) return "hsl(0 84% 60%)";
-    if (p >= 35) return "hsl(221 83% 53%)";
-    return "hsl(142 71% 45%)";
+    if (p >= 60) return "hsl(0 72% 51%)";
+    if (p >= 35) return "hsl(213 80% 50%)";
+    return "hsl(142 60% 40%)";
   };
 
   return (
@@ -22,7 +22,8 @@ export function ContractRow({ contract, index = 0 }: ContractRowProps) {
         duration: 0.4,
         ease: [0.16, 1, 0.3, 1],
       }}
-      className="group bg-card rounded-xl p-4 border border-border/60 hover:border-primary/20 hover:shadow-card transition-all duration-200"
+      className="group bg-card rounded-2xl p-4 transition-all duration-200"
+      style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.05)" }}
     >
       {/* Header row */}
       <div className="flex items-start justify-between gap-3 mb-3">
@@ -43,9 +44,9 @@ export function ContractRow({ contract, index = 0 }: ContractRowProps) {
       </div>
 
       {/* Probability bar */}
-      <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden mb-3">
+      <div className="w-full h-2 bg-muted rounded-full overflow-hidden mb-3">
         <motion.div
-          className="h-1.5 rounded-full"
+          className="h-2 rounded-full"
           style={{ backgroundColor: getBarColor(contract.probability) }}
           initial={{ width: 0 }}
           animate={{ width: `${contract.probability}%` }}

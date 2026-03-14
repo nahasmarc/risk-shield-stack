@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
+    --background: 0 0% 97%;
     --foreground: 220 20% 12%;
 
     --card: 0 0% 100%;
@@ -15,7 +15,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 220 20% 12%;
 
-    --primary: 221 83% 53%;
+    --primary: 348 100% 59%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 210 16% 96%;
@@ -32,25 +32,25 @@
 
     --border: 214 20% 90%;
     --input: 214 20% 90%;
-    --ring: 221 83% 53%;
+    --ring: 348 100% 59%;
 
     --radius: 16px;
 
-    /* Category color tokens (HSL values only — no hsl() wrapper) */
-    --color-energy: 24 100% 50%;
-    --color-technology: 271 76% 60%;
-    --color-geopolitics: 0 84% 60%;
-    --color-politics: 213 93% 58%;
-    --color-macro: 142 71% 45%;
+    /* Pastel category color tokens (HSL values only — no hsl() wrapper) */
+    --color-energy: 38 97% 72%;
+    --color-technology: 258 89% 86%;
+    --color-geopolitics: 0 93% 82%;
+    --color-politics: 214 95% 78%;
+    --color-macro: 142 77% 73%;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 220 20% 12%;
-    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary: 348 100% 59%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 210 16% 96%;
     --sidebar-accent-foreground: 220 20% 12%;
     --sidebar-border: 214 20% 90%;
-    --sidebar-ring: 221 83% 53%;
+    --sidebar-ring: 348 100% 59%;
   }
 }
 
@@ -62,10 +62,6 @@
   body {
     @apply text-foreground font-sans antialiased;
     background-color: hsl(var(--background));
-    background-image:
-      radial-gradient(ellipse 80% 50% at 50% -20%, hsl(221 83% 53% / 0.05) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 40% at 90% 90%, hsl(271 76% 60% / 0.04) 0%, transparent 55%);
-    background-attachment: fixed;
   }
 
   html {
@@ -88,7 +84,6 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.10);
   }
 
-  /* Legacy glass-card replaced by light version */
   .glass-card {
     background: hsl(var(--card));
     box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06);
@@ -108,9 +103,7 @@
   }
 
   .mesh-hero {
-    background-image:
-      radial-gradient(ellipse 60% 80% at 20% 50%, hsl(221 83% 53% / 0.04) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 60% at 80% 20%, hsl(271 76% 60% / 0.03) 0%, transparent 55%);
+    background-image: none;
   }
 
   /* Typing dots animation */
@@ -146,5 +139,5 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(221 83% 53% / 0.5);
+  background: hsl(348 100% 59% / 0.5);
 }

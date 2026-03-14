@@ -74,34 +74,34 @@ const BundleDetailPage = () => {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className="bg-card rounded-2xl shadow-card border border-border/60 overflow-hidden"
+              className="bg-card rounded-2xl overflow-hidden"
+              style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06)" }}
             >
-              {/* Gradient top strip */}
-              <div
-                className="h-[100px] flex items-end px-8 pb-5 relative overflow-hidden"
-                style={{ background: catConfig.gradient }}
-              >
-                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 80% 20%, white 0%, transparent 50%)" }} />
-                <div className="w-12 h-12 rounded-2xl bg-white/25 backdrop-blur-sm flex items-center justify-center relative z-10">
-                  <CatIcon className="w-6 h-6 text-white" />
-                </div>
-              </div>
+              {/* Thin top accent bar */}
+              <div className="h-1 w-full" style={{ backgroundColor: catConfig.accentHex }} />
 
               <div className="px-8 py-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xs font-semibold" style={{ color: bundle.categoryColor }}>
-                    {catConfig.label}
-                  </span>
-                  <span
-                    className="text-xs font-semibold px-2.5 py-0.5 rounded-full"
-                    style={{
-                      color: riskConfig.color,
-                      backgroundColor: `${riskConfig.color}15`,
-                    }}
+                {/* Icon badge + meta row */}
+                <div className="flex items-center gap-3 mb-4">
+                  <div
+                    className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: catConfig.pastel }}
                   >
-                    {riskConfig.label}
-                  </span>
+                    <CatIcon className="w-5 h-5" style={{ color: catConfig.color }} />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold" style={{ color: catConfig.color }}>
+                      {catConfig.label}
+                    </span>
+                    <span
+                      className="text-xs font-semibold px-2.5 py-0.5 rounded-full"
+                      style={{ color: riskConfig.color, backgroundColor: riskConfig.bg }}
+                    >
+                      {riskConfig.label}
+                    </span>
+                  </div>
                 </div>
+
                 <h1 className="text-2xl font-bold text-foreground mb-3">
                   {bundle.title}
                 </h1>
@@ -137,7 +137,8 @@ const BundleDetailPage = () => {
               ].map((stat) => (
                 <div
                   key={stat.label}
-                  className="bg-card rounded-2xl p-5 shadow-card border border-border/60"
+                  className="bg-card rounded-2xl p-5"
+                  style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.05)" }}
                 >
                   <p className="text-xs text-muted-foreground mb-1">{stat.label}</p>
                   <p className={`text-xl font-bold ${stat.color}`}>{stat.value}</p>
@@ -199,7 +200,8 @@ const BundleDetailPage = () => {
               initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.25, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className="bg-card rounded-2xl p-5 shadow-card border border-border/60 space-y-4"
+              className="bg-card rounded-2xl p-5 space-y-4"
+              style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.05)" }}
             >
               <h3 className="text-sm font-semibold text-foreground">Bundle Info</h3>
               <div className="space-y-3">

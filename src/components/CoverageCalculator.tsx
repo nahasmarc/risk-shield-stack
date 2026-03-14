@@ -32,7 +32,10 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
   };
 
   return (
-    <div className="bg-card rounded-2xl p-6 space-y-5 shadow-card border border-border/60">
+    <div
+      className="bg-card rounded-2xl p-6 space-y-5"
+      style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06)" }}
+    >
       <div>
         <h3 className="text-base font-semibold text-foreground mb-0.5">
           Coverage Calculator
@@ -71,7 +74,7 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
         </div>
         <div className="flex justify-between items-center">
           <span className="text-sm text-muted-foreground">Avg probability</span>
-          <span className="text-sm font-semibold text-accent">{avgProb}%</span>
+          <span className="text-sm font-semibold" style={{ color: "hsl(38 90% 45%)" }}>{avgProb}%</span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-sm text-muted-foreground">Potential return</span>
@@ -99,10 +102,12 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
 
       {/* Execute Button */}
       <Button
-        className="w-full rounded-xl text-sm font-semibold py-5"
+        className="w-full rounded-full text-sm font-semibold py-5"
         style={{
-          background: "linear-gradient(135deg, hsl(var(--primary)), hsl(221 83% 44%))",
-          boxShadow: "0 4px 16px hsl(var(--primary) / 0.25)",
+          background: executed
+            ? "hsl(142 60% 38%)"
+            : "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 48%))",
+          boxShadow: executed ? "none" : "0 4px 16px hsl(var(--primary) / 0.25)",
         }}
         onClick={handleExecute}
         disabled={executed || coverageNum <= 0}
