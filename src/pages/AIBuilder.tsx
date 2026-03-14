@@ -221,9 +221,21 @@ const AIBuilderPage = () => {
     inputRef.current?.focus();
   };
 
-  const handleSave = (bundle: HedgeBundle) => {
+  const handleSave = async (bundle: HedgeBundle) => {
     if (savedBundles.includes(bundle.id)) return;
     setSavedBundles((prev) => [...prev, bundle.id]);
+
+    if (user) {
+      await supabase.from("saved_bundles").upsert({
+        user_id: user.id,
+        bundle_id: bundle.id,
+        bundle_title: bundle.title,
+        bundle_category: bundle.category,
+        bundle_icon: bundle.icon,
+        contracts: bundle.contracts as unknown as any,
+      }, { onConflict: "user_id,bundle_id" });
+    }
+
     toast({
       title: "Bundle Saved",
       description: `"${bundle.title}" has been added to your portfolio.`,
