@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, BrainCircuit, Save } from "lucide-react";
+import { Send, BrainCircuit, Save, Newspaper, MessageSquare } from "lucide-react";
+import { NewsToHedge } from "@/components/NewsToHedge";
 import { Button } from "@/components/ui/button";
 import { Navigation } from "@/components/Navigation";
 import { ContractRow } from "@/components/ContractRow";
@@ -95,6 +96,7 @@ function RichText({ text }: { text: string }) {
 }
 
 const AIBuilderPage = () => {
+  const [activeTab, setActiveTab] = useState<"chat" | "news">("chat");
   const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [isThinking, setIsThinking] = useState(false);
@@ -165,11 +167,60 @@ const AIBuilderPage = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Navigation />
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-2xl mx-auto px-6 py-8 space-y-5">
-          <AnimatePresence initial={false}>
-            {messages.map((msg) => (
+      {/* Tab switcher */}
+      <div className="bg-card border-b border-border/60">
+        <div className="max-w-2xl mx-auto px-6 pt-4 pb-0 flex gap-1">
+          {[
+            { id: "chat" as const, label: "AI Chat Builder", icon: MessageSquare },
+            { id: "news" as const, label: "News to Hedge", icon: Newspaper, badge: "NEW" },
+          ].map(({ id, label, icon: Icon, badge }) => (
+            <button
+              key={id}
+              onClick={() => setActiveTab(id)}
+              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-t-xl transition-all duration-200 border-b-2 -mb-px ${
+                activeTab === id
+                  ? "border-primary text-primary bg-primary/5"
+                  : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/60"
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              {label}
+              {badge && (
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary">
+                  {badge}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <AnimatePresence mode="wait">
+        {activeTab === "news" ? (
+          <motion.div
+            key="news"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="flex-1 overflow-y-auto"
+          >
+            <NewsToHedge />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="chat"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="flex-1 flex flex-col overflow-hidden"
+          >
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto">
+              <div className="max-w-2xl mx-auto px-6 py-8 space-y-5">
+                <AnimatePresence initial={false}>
+                  {messages.map((msg) => (
               <motion.div
                 key={msg.id}
                 initial={{ opacity: 0, y: 14 }}
@@ -267,62 +318,65 @@ const AIBuilderPage = () => {
             )}
           </AnimatePresence>
 
-          <div ref={bottomRef} />
-        </div>
-      </div>
+                <div ref={bottomRef} />
+              </div>
+            </div>
 
-      {/* Input area */}
-      <div className="bg-card border-t border-border/60" style={{ boxShadow: "0 -4px 16px rgba(0,0,0,0.04)" }}>
-        <div className="max-w-2xl mx-auto px-6 pt-4 pb-5">
-          {/* Suggestion chips */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {SUGGESTION_CHIPS.map((chip) => (
-              <button
-                key={chip.label}
-                onClick={() => handleSubmit(chip.prompt)}
-                disabled={isThinking}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-foreground bg-background border border-border hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
-                style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
-              >
-                <span>{chip.icon}</span>
-                {chip.label}
-              </button>
-            ))}
-          </div>
+            {/* Input area */}
+            <div className="bg-card border-t border-border/60" style={{ boxShadow: "0 -4px 16px rgba(0,0,0,0.04)" }}>
+              <div className="max-w-2xl mx-auto px-6 pt-4 pb-5">
+                {/* Suggestion chips */}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {SUGGESTION_CHIPS.map((chip) => (
+                    <button
+                      key={chip.label}
+                      onClick={() => handleSubmit(chip.prompt)}
+                      disabled={isThinking}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-foreground bg-background border border-border hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                      style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
+                    >
+                      <span>{chip.icon}</span>
+                      {chip.label}
+                    </button>
+                  ))}
+                </div>
 
-          {/* Input bar */}
-          <div
-            className="flex items-center gap-3 bg-background rounded-2xl px-5 py-3 border border-border transition-all duration-200 focus-within:border-primary/40"
-            style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.05)" }}
-          >
-            <input
-              ref={inputRef}
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-              placeholder="Describe a risk you want to hedge..."
-              className="flex-1 text-sm text-foreground placeholder:text-muted-foreground bg-transparent focus:outline-none"
-              disabled={isThinking}
-            />
-            <button
-              onClick={() => handleSubmit()}
-              disabled={!input.trim() || isThinking}
-              className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
-              style={{
-                background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 48%))",
-                boxShadow: "0 2px 8px hsl(var(--primary) / 0.3)",
-              }}
-            >
-              <Send className="w-3.5 h-3.5 text-white" />
-            </button>
-          </div>
+                {/* Input bar */}
+                <div
+                  className="flex items-center gap-3 bg-background rounded-2xl px-5 py-3 border border-border transition-all duration-200 focus-within:border-primary/40"
+                  style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.05)" }}
+                >
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                    placeholder="Describe a risk you want to hedge..."
+                    className="flex-1 text-sm text-foreground placeholder:text-muted-foreground bg-transparent focus:outline-none"
+                    disabled={isThinking}
+                  />
+                  <button
+                    onClick={() => handleSubmit()}
+                    disabled={!input.trim() || isThinking}
+                    className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
+                    style={{
+                      background: "linear-gradient(135deg, hsl(var(--primary)), hsl(348 100% 48%))",
+                      boxShadow: "0 2px 8px hsl(var(--primary) / 0.3)",
+                    }}
+                  >
+                    <Send className="w-3.5 h-3.5 text-white" />
+                  </button>
+                </div>
 
-          <p className="text-xs text-muted-foreground mt-2.5 text-center">
-            Mock AI · No data leaves this browser · Press Enter to submit
-          </p>
-        </div>
-      </div>
+                <p className="text-xs text-muted-foreground mt-2.5 text-center">
+                  Mock AI · No data leaves this browser · Press Enter to submit
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
