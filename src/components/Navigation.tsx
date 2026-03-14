@@ -129,10 +129,12 @@ function AuthButton() {
 
   return (
     <div className="flex items-center gap-2">
-      <Avatar className="w-8 h-8 border border-border">
-        <AvatarImage src={user.user_metadata?.avatar_url} />
-        <AvatarFallback className="text-xs bg-muted">{initials}</AvatarFallback>
-      </Avatar>
+      <button onClick={() => navigate("/settings")} title="Settings">
+        <Avatar className="w-8 h-8 border border-border hover:ring-2 hover:ring-primary/30 transition-all cursor-pointer">
+          <AvatarImage src={user.user_metadata?.avatar_url} />
+          <AvatarFallback className="text-xs bg-muted">{initials}</AvatarFallback>
+        </Avatar>
+      </button>
       <button onClick={signOut} className="text-muted-foreground hover:text-foreground transition-colors" title="Sign out">
         <LogOut className="w-4 h-4" />
       </button>
