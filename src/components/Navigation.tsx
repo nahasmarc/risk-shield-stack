@@ -1,7 +1,10 @@
-import { Link, useLocation } from "react-router-dom";
-import { BrainCircuit, Zap, BarChart3, Database } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { BrainCircuit, Zap, BarChart3, Database, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getDataSourceHealth } from "@/lib/api";
+import { useAuth } from "@/hooks/useAuth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
 type DataSource = "live" | "mock" | "loading";
 
@@ -71,34 +74,68 @@ export function Navigation() {
           {navLink("/builder", "AI Builder", <BrainCircuit className="w-3.5 h-3.5" />, "BETA")}
         </div>
 
-        {/* Polymarket data source indicator */}
-        <div className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-500 ${
-          isLoading
-            ? "bg-muted border-border"
-            : isLive
-            ? "bg-green-50 border-green-100"
-            : "bg-amber-50 border-amber-100"
-        }`}>
-          <Database className={`w-3 h-3 ${
-            isLoading ? "text-muted-foreground" :
-            isLive ? "text-green-600" : "text-amber-600"
-          }`} />
-          <div className={`w-1.5 h-1.5 rounded-full ${
-            isLoading ? "bg-muted-foreground animate-pulse" :
-            isLive ? "bg-green-500 animate-pulse" : "bg-amber-500"
-          }`} />
-          <span className={`text-xs font-semibold ${
-            isLoading ? "text-muted-foreground" :
-            isLive ? "text-green-700" : "text-amber-700"
-          }`}>
-            {isLoading
-              ? "Connecting..."
+        {/* Right side: status + auth */}
+        <div className="flex items-center gap-3">
+          <div className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-500 ${
+            isLoading
+              ? "bg-muted border-border"
               : isLive
-              ? `Polymarket Live · ${marketCount}m`
-              : "Mock Data"}
-          </span>
+              ? "bg-green-50 border-green-100"
+              : "bg-amber-50 border-amber-100"
+          }`}>
+            <Database className={`w-3 h-3 ${
+              isLoading ? "text-muted-foreground" :
+              isLive ? "text-green-600" : "text-amber-600"
+            }`} />
+            <div className={`w-1.5 h-1.5 rounded-full ${
+              isLoading ? "bg-muted-foreground animate-pulse" :
+              isLive ? "bg-green-500 animate-pulse" : "bg-amber-500"
+            }`} />
+            <span className={`text-xs font-semibold ${
+              isLoading ? "text-muted-foreground" :
+              isLive ? "text-green-700" : "text-amber-700"
+            }`}>
+              {isLoading
+                ? "Connecting..."
+                : isLive
+                ? `Polymarket Live · ${marketCount}m`
+                : "Mock Data"}
+            </span>
+          </div>
+
+          <AuthButton />
         </div>
       </div>
     </nav>
+  );
+}
+
+function AuthButton() {
+  const { user, loading, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  if (loading) return null;
+
+  if (!user) {
+    return (
+      <Button size="sm" onClick={() => navigate("/login")} className="h-8 text-xs">
+        Sign In
+      </Button>
+    );
+  }
+
+  const initials = (user.user_metadata?.full_name || user.email || "U")
+    .split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
+
+  return (
+    <div className="flex items-center gap-2">
+      <Avatar className="w-8 h-8 border border-border">
+        <AvatarImage src={user.user_metadata?.avatar_url} />
+        <AvatarFallback className="text-xs bg-muted">{initials}</AvatarFallback>
+      </Avatar>
+      <button onClick={signOut} className="text-muted-foreground hover:text-foreground transition-colors" title="Sign out">
+        <LogOut className="w-4 h-4" />
+      </button>
+    </div>
   );
 }
