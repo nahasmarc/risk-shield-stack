@@ -11,6 +11,10 @@ export interface ParsedRisk {
   keywords: string[];
   reasoning: string;
   bundleId: string;         // maps to HEDGE_BUNDLES id
+  // Granular risk signal fields
+  riskType: string;         // e.g. "commodity shock", "military escalation"
+  sector: string;           // e.g. "energy", "technology"
+  region: string;           // e.g. "middle east", "east asia", "global"
 }
 
 const CATEGORY_TO_BUNDLE: Record<string, string> = {
@@ -28,6 +32,50 @@ const BUNDLE_LABELS: Record<string, string> = {
   "us-election-volatility": "Electoral Volatility Risk",
   "inflation-spike":        "Macroeconomic / Inflation Risk",
 };
+
+// Risk type defaults per category
+const CATEGORY_TO_RISK_TYPE: Record<string, string> = {
+  ENERGY:      "commodity shock",
+  TECHNOLOGY:  "regulatory clampdown",
+  GEOPOLITICS: "military escalation",
+  POLITICS:    "electoral volatility",
+  MACRO:       "macroeconomic stress",
+};
+
+// Sector defaults per category
+const CATEGORY_TO_SECTOR: Record<string, string> = {
+  ENERGY:      "energy",
+  TECHNOLOGY:  "technology",
+  GEOPOLITICS: "defense",
+  POLITICS:    "government",
+  MACRO:       "finance",
+};
+
+// Region keyword detection (ordered by specificity — longer phrases first)
+const REGION_PATTERNS: Array<{ keywords: string[]; region: string }> = [
+  { keywords: ["middle east", "iran", "iraq", "israel", "saudi", "opec", "persian gulf", "yemen"], region: "middle east" },
+  { keywords: ["taiwan", "strait", "east asia", "south china sea", "japan", "south korea", "hong kong"], region: "east asia" },
+  { keywords: ["china", "beijing", "shanghai", "xi jinping", "pla", "ccp"], region: "east asia" },
+  { keywords: ["russia", "ukraine", "nato", "europe", "eu ", "european", "germany", "france", "uk ", "britain"], region: "europe" },
+  { keywords: ["india", "south asia", "pakistan", "bangladesh"], region: "south asia" },
+  { keywords: ["latin america", "brazil", "mexico", "venezuela", "south america"], region: "latin america" },
+  { keywords: ["africa", "sub-saharan", "nigeria", "south africa"], region: "africa" },
+  {
+    keywords: [
+      "united states", "us ", "u.s.", "america", "congress", "senate", "fed ", "federal reserve",
+      "wall street", "dollar", "election", "democrat", "republican", "white house",
+    ],
+    region: "united states",
+  },
+];
+
+function detectRegion(text: string): string {
+  const lower = text.toLowerCase();
+  for (const { keywords, region } of REGION_PATTERNS) {
+    if (keywords.some((kw) => lower.includes(kw))) return region;
+  }
+  return "global";
+}
 
 // Lightweight keyword fallback used when AI call fails
 const KEYWORD_MAP: Record<string, string> = {
@@ -66,6 +114,9 @@ function keywordFallback(text: string): ParsedRisk {
       keywords: [],
       reasoning: "No recognisable risk keywords found.",
       bundleId: "",
+      riskType: "unknown",
+      sector: "unknown",
+      region: "global",
     };
   }
 
@@ -82,6 +133,9 @@ function keywordFallback(text: string): ParsedRisk {
     keywords: hits.slice(0, 5).map((h) => h.kw),
     reasoning: `Keyword-based analysis detected "${top.kw}" (×${top.count}).`,
     bundleId,
+    riskType: CATEGORY_TO_RISK_TYPE[cat] ?? "market risk",
+    sector:   CATEGORY_TO_SECTOR[cat] ?? "finance",
+    region:   detectRegion(text),
   };
 }
 
@@ -146,8 +200,20 @@ If none apply, still pick the closest one. Never output UNKNOWN.`;
                     type: "string",
                     description: "One sentence explaining why this risk category was chosen",
                   },
+                  riskType: {
+                    type: "string",
+                    description: "Specific risk type label e.g. 'commodity shock', 'military escalation', 'regulatory clampdown', 'currency devaluation', 'supply chain disruption'",
+                  },
+                  sector: {
+                    type: "string",
+                    description: "Primary economic sector affected e.g. 'energy', 'technology', 'defense', 'finance', 'agriculture', 'semiconductors'",
+                  },
+                  region: {
+                    type: "string",
+                    description: "Primary geographic region e.g. 'middle east', 'east asia', 'united states', 'europe', 'south asia', 'global'",
+                  },
                 },
-                required: ["riskCategory", "riskLabel", "confidence", "keywords", "reasoning"],
+                required: ["riskCategory", "riskLabel", "confidence", "keywords", "reasoning", "riskType", "sector", "region"],
                 additionalProperties: false,
               },
             },
@@ -185,6 +251,9 @@ If none apply, still pick the closest one. Never output UNKNOWN.`;
       keywords: Array.isArray(parsed.keywords) ? parsed.keywords.slice(0, 6) : [],
       reasoning: parsed.reasoning ?? "",
       bundleId,
+      riskType: parsed.riskType ?? CATEGORY_TO_RISK_TYPE[cat] ?? "market risk",
+      sector:   parsed.sector   ?? CATEGORY_TO_SECTOR[cat]   ?? "finance",
+      region:   parsed.region   ?? detectRegion(text),
     };
   } catch (err) {
     console.error("parseRisk error:", err);

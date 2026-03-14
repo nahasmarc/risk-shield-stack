@@ -15,6 +15,10 @@ export interface DetectedRisk {
   keywords: string[];
   reasoning: string;
   bundleId: string;
+  // Granular risk signal fields
+  riskType: string;   // e.g. "commodity shock", "military escalation"
+  sector: string;     // e.g. "energy", "technology"
+  region: string;     // e.g. "middle east", "east asia", "global"
 }
 
 export interface ApiContract {
