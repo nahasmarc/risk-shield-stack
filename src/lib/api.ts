@@ -1,3 +1,10 @@
+/**
+ * src/lib/api.ts
+ * Typed fetch helpers for the PolyBumble backend edge functions.
+ */
+
+const BASE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`;
+
 // ── GET /health — Polymarket connection status ────────────────────────────────
 
 export interface HealthResponse {
@@ -15,6 +22,7 @@ export async function getDataSourceHealth(): Promise<HealthResponse> {
 
 
 // ── Shared types mirroring the edge function responses ──────────────────────
+
 
 export interface DetectedRisk {
   riskCategory: "ENERGY" | "TECHNOLOGY" | "GEOPOLITICS" | "POLITICS" | "MACRO" | "UNKNOWN";
