@@ -77,7 +77,7 @@ function generateAssistantResponse(input: string, bundle: HedgeBundle | null): s
 const WELCOME_MESSAGE: Message = {
   id: "welcome",
   role: "assistant",
-  content: "Hi! I'm the **PolyBumble Coverage Builder**.\n\nDescribe a real-world risk you're exposed to and I'll construct a tailored coverage bundle from Polymarket prediction markets. You can also tap one of the suggestions below to get started quickly.",
+  content: "Hi! I'm the **PolyBundle Coverage Builder**.\n\nDescribe a real-world risk you're exposed to and I'll construct a tailored coverage bundle from Polymarket prediction markets. You can also tap one of the suggestions below to get started quickly.",
   timestamp: new Date(),
 };
 
