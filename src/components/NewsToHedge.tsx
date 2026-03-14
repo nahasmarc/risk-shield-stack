@@ -76,6 +76,9 @@ interface AnalysisResult {
     keyword: string;
     confidence: number;
     bundleId: string;
+    riskType: string;
+    sector: string;
+    region: string;
   };
   bundle: HedgeBundle;
 }
@@ -91,6 +94,9 @@ function mapApiResponse(resp: NewsHedgeResponse): AnalysisResult | null {
       keyword: resp.detectedRisk.keywords?.[0] ?? resp.detectedRisk.riskCategory.toLowerCase(),
       confidence: resp.confidence ?? resp.detectedRisk.confidence,
       bundleId: resp.bundle.id,
+      riskType: resp.detectedRisk.riskType ?? "",
+      sector:   resp.detectedRisk.sector   ?? "",
+      region:   resp.detectedRisk.region   ?? "",
     },
     bundle: frontendBundle,
   };
@@ -124,6 +130,40 @@ const RISK_LABELS: Record<string, string> = {
   "inflation-spike":       "Macroeconomic / Inflation Risk",
 };
 
+const BUNDLE_RISK_TYPE: Record<string, string> = {
+  "oil-shock":             "commodity shock",
+  "ai-regulation":         "regulatory clampdown",
+  "taiwan-conflict":       "military escalation",
+  "us-election-volatility":"electoral volatility",
+  "inflation-spike":       "macroeconomic stress",
+};
+
+const BUNDLE_SECTOR: Record<string, string> = {
+  "oil-shock":             "energy",
+  "ai-regulation":         "technology",
+  "taiwan-conflict":       "defense",
+  "us-election-volatility":"government",
+  "inflation-spike":       "finance",
+};
+
+const REGION_PATTERNS: Array<{ keywords: string[]; region: string }> = [
+  { keywords: ["middle east", "iran", "iraq", "israel", "saudi", "opec", "yemen"], region: "middle east" },
+  { keywords: ["taiwan", "strait", "east asia", "south china sea", "japan", "south korea"], region: "east asia" },
+  { keywords: ["china", "beijing", "shanghai", "xi jinping"], region: "east asia" },
+  { keywords: ["russia", "ukraine", "nato", "europe", "eu ", "european", "germany", "france", "uk ", "britain"], region: "europe" },
+  { keywords: ["india", "south asia", "pakistan"], region: "south asia" },
+  { keywords: ["latin america", "brazil", "mexico", "venezuela"], region: "latin america" },
+  { keywords: ["united states", "us ", "u.s.", "america", "congress", "senate", "fed ", "federal reserve", "wall street", "dollar", "election", "democrat", "republican", "white house"], region: "united states" },
+];
+
+function detectRegionFallback(text: string): string {
+  const lower = text.toLowerCase();
+  for (const { keywords, region } of REGION_PATTERNS) {
+    if (keywords.some((kw) => lower.includes(kw))) return region;
+  }
+  return "global";
+}
+
 function keywordFallback(raw: string): AnalysisResult | null {
   const text = raw.trim().slice(0, 2000);
   if (!text) return null;
@@ -143,10 +183,13 @@ function keywordFallback(raw: string): AnalysisResult | null {
   const rawConf = Math.min(40 + top.count * 18 + Math.min(text.length / 20, 22), 97);
   return {
     detectedRisk: {
-      keyword: top.keyword,
-      riskLabel: RISK_LABELS[top.bundleId] ?? "Geopolitical Risk",
+      keyword:   top.keyword,
+      riskLabel: RISK_LABELS[top.bundleId]    ?? "Geopolitical Risk",
       confidence: Math.round(rawConf),
-      bundleId: top.bundleId,
+      bundleId:  top.bundleId,
+      riskType:  BUNDLE_RISK_TYPE[top.bundleId] ?? "market risk",
+      sector:    BUNDLE_SECTOR[top.bundleId]    ?? "finance",
+      region:    detectRegionFallback(text),
     },
     bundle,
   };
