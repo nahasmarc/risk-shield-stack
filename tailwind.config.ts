@@ -64,8 +64,17 @@ export default {
       },
       borderRadius: {
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        md: "calc(var(--radius) - 4px)",
+        sm: "calc(var(--radius) - 8px)",
+        xl: "calc(var(--radius) + 4px)",
+        "2xl": "calc(var(--radius) + 8px)",
+        "3xl": "calc(var(--radius) + 16px)",
+      },
+      boxShadow: {
+        card: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06)",
+        "card-hover": "0 4px 12px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.10)",
+        "card-lg": "0 8px 24px rgba(0,0,0,0.08), 0 24px 56px rgba(0,0,0,0.12)",
+        "input-focus": "0 0 0 3px hsl(221 83% 53% / 0.15)",
       },
       keyframes: {
         "accordion-down": {
@@ -89,8 +98,8 @@ export default {
           "100%": { backgroundPosition: "200% 0" },
         },
         "glow-pulse": {
-          "0%, 100%": { boxShadow: "0 0 8px hsl(211 100% 55% / 0.3)" },
-          "50%": { boxShadow: "0 0 20px hsl(211 100% 55% / 0.6)" },
+          "0%, 100%": { boxShadow: "0 0 8px hsl(221 83% 53% / 0.2)" },
+          "50%": { boxShadow: "0 0 20px hsl(221 83% 53% / 0.4)" },
         },
         "slide-up": {
           from: { opacity: "0", transform: "translateY(8px)" },
@@ -119,10 +128,9 @@ export default {
         "signal-tick": "signal-tick 3s ease-in-out",
       },
       backgroundImage: {
-        "glass-gradient": "linear-gradient(135deg, hsl(232 18% 8%), hsl(232 20% 6%))",
-        "card-gradient": "linear-gradient(135deg, hsl(232 18% 9% / 0.9), hsl(232 18% 7% / 0.7))",
-        "primary-gradient": "linear-gradient(135deg, hsl(211 100% 55%), hsl(211 100% 45%))",
-        "mesh-bg": "radial-gradient(ellipse 80% 60% at 50% -10%, hsl(211 100% 55% / 0.07) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 90% 80%, hsl(271 76% 60% / 0.05) 0%, transparent 55%)",
+        "primary-gradient": "linear-gradient(135deg, hsl(221 83% 53%), hsl(221 83% 44%))",
+        "card-gradient": "linear-gradient(135deg, hsl(0 0% 100%), hsl(210 16% 98%))",
+        "mesh-bg": "radial-gradient(ellipse 80% 50% at 50% -20%, hsl(221 83% 53% / 0.06) 0%, transparent 60%)",
       },
     },
   },
