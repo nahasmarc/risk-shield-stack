@@ -80,8 +80,8 @@ export function CoverageCalculator({ bundle }: CoverageCalculatorProps) {
 
       const { data, error } = await supabase.functions.invoke("place-order", {
         body: {
-          // tokenId for primary contract — using contract id as proxy for demo
-          tokenId: primaryContract.id,
+          // Use CLOB yesTokenId when available; fall back to market id (simulation only)
+          tokenId: primaryContract.yesTokenId ?? primaryContract.id,
           side: "BUY",
           size: (cost / primaryContract.probability * 100).toFixed(2),
           price: (primaryContract.probability / 100).toFixed(4),

@@ -2,6 +2,8 @@ import { Flame, Cpu, Globe, Vote, TrendingUp, type LucideIcon } from "lucide-rea
 
 export interface Contract {
   id: string;
+  slug?: string;        // Polymarket event slug for deep links
+  yesTokenId?: string;  // 256-bit CLOB token ID for real orders
   title: string;
   probability: number; // 0–100
   liquidity: number;   // in USD millions
