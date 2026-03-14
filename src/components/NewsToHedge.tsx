@@ -21,85 +21,7 @@ import {
   RISK_LEVEL_CONFIG,
 } from "@/data/bundles";
 import { useToast } from "@/hooks/use-toast";
-
-/* ─── Keyword → bundle mapping (shared with chat) ─── */
-const KEYWORD_MAP: Record<string, string> = {
-  oil: "oil-shock", crude: "oil-shock", opec: "oil-shock",
-  energy: "oil-shock", "middle east": "oil-shock",
-  ai: "ai-regulation", artificial: "ai-regulation",
-  regulation: "ai-regulation", tech: "ai-regulation",
-  taiwan: "taiwan-conflict", china: "taiwan-conflict",
-  semiconductor: "taiwan-conflict", chip: "taiwan-conflict",
-  nvidia: "taiwan-conflict",
-  election: "us-election-volatility", vote: "us-election-volatility",
-  political: "us-election-volatility", congress: "us-election-volatility",
-  inflation: "inflation-spike", cpi: "inflation-spike",
-  fed: "inflation-spike", dollar: "inflation-spike",
-  commodity: "inflation-spike", rate: "inflation-spike",
-  recession: "inflation-spike", gdp: "inflation-spike",
-  military: "taiwan-conflict", conflict: "taiwan-conflict",
-  russia: "taiwan-conflict", war: "taiwan-conflict",
-  sanctions: "taiwan-conflict",
-};
-
-interface DetectedRisk {
-  keyword: string;
-  riskLabel: string;
-  confidence: number;
-  bundleId: string;
-}
-
-interface AnalysisResult {
-  detectedRisk: DetectedRisk;
-  bundle: HedgeBundle;
-}
-
-/* ─── Core analysis logic ─── */
-function analyzeText(raw: string): AnalysisResult | null {
-  // Validate: must be a non-empty string, strip leading/trailing whitespace
-  const text = raw.trim().slice(0, 2000); // hard length cap
-  if (!text) return null;
-
-  const lower = text.toLowerCase();
-  const hits: { keyword: string; bundleId: string; count: number }[] = [];
-
-  for (const [kw, id] of Object.entries(KEYWORD_MAP)) {
-    let count = 0;
-    let pos = 0;
-    while ((pos = lower.indexOf(kw, pos)) !== -1) { count++; pos += kw.length; }
-    if (count > 0) hits.push({ keyword: kw, bundleId: id, count });
-  }
-
-  if (hits.length === 0) return null;
-
-  // Pick the keyword with the most occurrences; break ties by length (more specific)
-  hits.sort((a, b) => b.count - a.count || b.keyword.length - a.keyword.length);
-  const top = hits[0];
-  const bundle = HEDGE_BUNDLES.find((b) => b.id === top.bundleId);
-  if (!bundle) return null;
-
-  // Rough confidence: more keyword hits + longer text = higher confidence
-  const rawConf = Math.min(40 + top.count * 18 + Math.min(text.length / 20, 22), 97);
-  const confidence = Math.round(rawConf);
-
-  const RISK_LABELS: Record<string, string> = {
-    "oil-shock":             "Energy / Oil Supply Risk",
-    "ai-regulation":         "AI Regulation Risk",
-    "taiwan-conflict":       "Geopolitical Conflict Risk",
-    "us-election-volatility":"Electoral Volatility Risk",
-    "inflation-spike":       "Macroeconomic / Inflation Risk",
-  };
-
-  return {
-    detectedRisk: {
-      keyword: top.keyword,
-      riskLabel: RISK_LABELS[top.bundleId] ?? "Geopolitical Risk",
-      confidence,
-      bundleId: top.bundleId,
-    },
-    bundle,
-  };
-}
+import { newsHedge, type NewsHedgeResponse } from "@/lib/api";
 
 /* ─── Example headlines ─── */
 const EXAMPLE_HEADLINES = [
@@ -148,10 +70,92 @@ function StepIndicator({
   );
 }
 
+interface AnalysisResult {
+  detectedRisk: {
+    riskLabel: string;
+    keyword: string;
+    confidence: number;
+    bundleId: string;
+  };
+  bundle: HedgeBundle;
+}
+
+/* ─── Map API response → frontend AnalysisResult ─── */
+function mapApiResponse(resp: NewsHedgeResponse): AnalysisResult | null {
+  const frontendBundle = HEDGE_BUNDLES.find((b) => b.id === resp.bundle.id);
+  if (!frontendBundle) return null;
+
+  return {
+    detectedRisk: {
+      riskLabel: resp.detectedRisk.riskLabel,
+      keyword: resp.detectedRisk.keywords?.[0] ?? resp.detectedRisk.riskCategory.toLowerCase(),
+      confidence: resp.confidence ?? resp.detectedRisk.confidence,
+      bundleId: resp.bundle.id,
+    },
+    bundle: frontendBundle,
+  };
+}
+
+/* ─── Keyword fallback (used when API call fails) ─── */
+const KEYWORD_MAP: Record<string, string> = {
+  oil: "oil-shock", crude: "oil-shock", opec: "oil-shock",
+  energy: "oil-shock", "middle east": "oil-shock",
+  ai: "ai-regulation", artificial: "ai-regulation",
+  regulation: "ai-regulation", tech: "ai-regulation",
+  taiwan: "taiwan-conflict", china: "taiwan-conflict",
+  semiconductor: "taiwan-conflict", chip: "taiwan-conflict",
+  nvidia: "taiwan-conflict",
+  election: "us-election-volatility", vote: "us-election-volatility",
+  political: "us-election-volatility", congress: "us-election-volatility",
+  inflation: "inflation-spike", cpi: "inflation-spike",
+  fed: "inflation-spike", dollar: "inflation-spike",
+  commodity: "inflation-spike", rate: "inflation-spike",
+  recession: "inflation-spike", gdp: "inflation-spike",
+  military: "taiwan-conflict", conflict: "taiwan-conflict",
+  russia: "taiwan-conflict", war: "taiwan-conflict",
+  sanctions: "taiwan-conflict",
+};
+
+const RISK_LABELS: Record<string, string> = {
+  "oil-shock":             "Energy / Oil Supply Risk",
+  "ai-regulation":         "AI Regulation Risk",
+  "taiwan-conflict":       "Geopolitical Conflict Risk",
+  "us-election-volatility":"Electoral Volatility Risk",
+  "inflation-spike":       "Macroeconomic / Inflation Risk",
+};
+
+function keywordFallback(raw: string): AnalysisResult | null {
+  const text = raw.trim().slice(0, 2000);
+  if (!text) return null;
+  const lower = text.toLowerCase();
+  const hits: { keyword: string; bundleId: string; count: number }[] = [];
+  for (const [kw, id] of Object.entries(KEYWORD_MAP)) {
+    let count = 0;
+    let pos = 0;
+    while ((pos = lower.indexOf(kw, pos)) !== -1) { count++; pos += kw.length; }
+    if (count > 0) hits.push({ keyword: kw, bundleId: id, count });
+  }
+  if (hits.length === 0) return null;
+  hits.sort((a, b) => b.count - a.count || b.keyword.length - a.keyword.length);
+  const top = hits[0];
+  const bundle = HEDGE_BUNDLES.find((b) => b.id === top.bundleId);
+  if (!bundle) return null;
+  const rawConf = Math.min(40 + top.count * 18 + Math.min(text.length / 20, 22), 97);
+  return {
+    detectedRisk: {
+      keyword: top.keyword,
+      riskLabel: RISK_LABELS[top.bundleId] ?? "Geopolitical Risk",
+      confidence: Math.round(rawConf),
+      bundleId: top.bundleId,
+    },
+    bundle,
+  };
+}
+
 /* ─── Main component ─── */
 export function NewsToHedge({ onSaveBundle }: { onSaveBundle?: (b: HedgeBundle) => void }) {
   const [newsText, setNewsText] = useState("");
-  const [analysisStep, setAnalysisStep] = useState<0 | 1 | 2 | 3>(0); // 0=idle 1=extracting 2=mapping 3=done
+  const [analysisStep, setAnalysisStep] = useState<0 | 1 | 2 | 3>(0);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -168,13 +172,31 @@ export function NewsToHedge({ onSaveBundle }: { onSaveBundle?: (b: HedgeBundle) 
 
     // Step 1 — extracting risk
     setAnalysisStep(1);
-    await new Promise((r) => setTimeout(r, 900 + Math.random() * 500));
 
-    const analysis = analyzeText(newsText);
+    let analysis: AnalysisResult | null = null;
 
-    // Step 2 — mapping markets
-    setAnalysisStep(2);
-    await new Promise((r) => setTimeout(r, 700 + Math.random() * 400));
+    try {
+      // Real AI backend call
+      const resp = await newsHedge(newsText);
+      analysis = mapApiResponse(resp);
+
+      // Step 2 — mapping markets (brief pause for UX)
+      setAnalysisStep(2);
+      await new Promise((r) => setTimeout(r, 500));
+    } catch (err) {
+      // Graceful degradation to keyword fallback
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      console.warn("news-hedge API error, falling back:", msg);
+
+      if (msg.includes("Rate limit") || msg.includes("credits")) {
+        toast({ title: "AI Limit Reached", description: msg, variant: "destructive" });
+      }
+
+      // Step 2 — mapping markets
+      setAnalysisStep(2);
+      await new Promise((r) => setTimeout(r, 600));
+      analysis = keywordFallback(newsText);
+    }
 
     if (!analysis) {
       setError(
@@ -248,7 +270,6 @@ export function NewsToHedge({ onSaveBundle }: { onSaveBundle?: (b: HedgeBundle) 
               ref={textareaRef}
               value={newsText}
               onChange={(e) => {
-                // Input validation: cap at 2000 chars client-side
                 if (e.target.value.length <= 2000) setNewsText(e.target.value);
               }}
               disabled={analysisStep > 0 && analysisStep < 3}
@@ -257,7 +278,7 @@ export function NewsToHedge({ onSaveBundle }: { onSaveBundle?: (b: HedgeBundle) 
               className="w-full resize-none rounded-xl text-sm text-foreground placeholder:text-muted-foreground bg-background border border-border px-4 py-3 focus:outline-none focus:border-primary/40 transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed leading-relaxed"
             />
             <div className="flex items-center justify-between">
-              <p className="text-[11px] text-muted-foreground">Supports headlines, full articles, or risk descriptions</p>
+              <p className="text-[11px] text-muted-foreground">Powered by Lovable AI · Supports headlines, articles, or risk descriptions</p>
               <span className={`text-[11px] tabular-nums ${newsText.length > 1800 ? "text-destructive" : "text-muted-foreground"}`}>
                 {newsText.length} / 2000
               </span>
