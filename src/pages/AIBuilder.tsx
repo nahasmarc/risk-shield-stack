@@ -414,7 +414,7 @@ const AIBuilderPage = () => {
                 </div>
 
                 <p className="text-xs text-muted-foreground mt-2.5 text-center">
-                  Mock AI · No data leaves this browser · Press Enter to submit
+                  Powered by Lovable AI · Press Enter to submit
                 </p>
               </div>
             </div>
